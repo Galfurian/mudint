@@ -1,1 +1,1 @@
-# mud_interpreter
+# Multi User Dungeon (MUD) Interpreter
