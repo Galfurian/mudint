@@ -101,7 +101,7 @@ bool beginWith(const std::string &source, const std::string &prefix, bool sensit
     return it1 == prefix.end();
 }
 
-template<typename T>
+template <typename T>
 const char *get_ordinal(T n)
 {
     static const char suffixes[][3] = { "th", "st", "nd", "rd" };
