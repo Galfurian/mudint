@@ -5,10 +5,8 @@
 # @update : 03/01/2022
 # -----------------------------------------------------------------------------
 
-# -----------------------------------------------------------------------------
-# Set the minimum CMake version, the project name and default build type.
-# -----------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.1)
+# Set the minimum CMake version.
+cmake_minimum_required(VERSION 2.8...3.22)
 
 # Set the project name.
 project(mudint CXX)
@@ -52,24 +50,27 @@ find_package(Doxygen)
 # LIBRARY
 # -----------------------------------------------------------------------------
 
-# Add the C++ library.
-add_library(${PROJECT_NAME} INTERFACE)
+# Add the C++ Library.
+add_library(${PROJECT_NAME}
+    ${PROJECT_SOURCE_DIR}/src/interpreter/argument.cpp
+    ${PROJECT_SOURCE_DIR}/src/interpreter/interpreter.cpp
+)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
-# Inlcude header directories.
-target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/include)
+# Inlcude header directories and set the library.
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 # -----------------------------------------------------------------------------
 # Set the compilation flags.
 # -----------------------------------------------------------------------------
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     # Disable warnings that suggest using MSVC-specific safe functions
-    target_compile_definitions(${PROJECT_NAME} INTERFACE _CRT_SECURE_NO_WARNINGS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC _CRT_SECURE_NO_WARNINGS)
     if(${PROJECT_NAME}_WARNINGS_AS_ERRORS)
-        target_compile_options(${PROJECT_NAME} INTERFACE /WX)
+        target_compile_options(${PROJECT_NAME} PUBLIC /WX)
     endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     if(${PROJECT_NAME}_WARNINGS_AS_ERRORS)
-        target_compile_options(${PROJECT_NAME} INTERFACE -Werror)
+        target_compile_options(${PROJECT_NAME} PUBLIC -Werror)
     endif()
 endif()
 
@@ -77,16 +78,43 @@ if(${PROJECT_NAME}_STRICT_WARNINGS)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         # Mark system headers as external for MSVC explicitly
         # https://devblogs.microsoft.com/cppblog/broken-warnings-theory
-        target_compile_options(${PROJECT_NAME} INTERFACE /experimental:external)
-        target_compile_options(${PROJECT_NAME} INTERFACE /external:I ${CMAKE_BINARY_DIR})
-        target_compile_options(${PROJECT_NAME} INTERFACE /external:anglebrackets)
-        target_compile_options(${PROJECT_NAME} INTERFACE /external:W0)
+        target_compile_options(${PROJECT_NAME} PUBLIC /experimental:external)
+        target_compile_options(${PROJECT_NAME} PUBLIC /external:I ${CMAKE_BINARY_DIR})
+        target_compile_options(${PROJECT_NAME} PUBLIC /external:anglebrackets)
+        target_compile_options(${PROJECT_NAME} PUBLIC /external:W0)
 
-        target_compile_options(${PROJECT_NAME} INTERFACE /W4)
+        target_compile_options(${PROJECT_NAME} PUBLIC /W4)
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        target_compile_options(${PROJECT_NAME} INTERFACE -Wall -Wextra -Wconversion -pedantic)
+        target_compile_options(${PROJECT_NAME} PUBLIC -Wall -Wextra -Wconversion -pedantic)
     endif()
 endif()
+
+# -----------------------------------------------------------------------------
+# DIPENDENCIES
+# -----------------------------------------------------------------------------
+# Retrieve the source.
+FetchContent_Declare(ustr
+    GIT_REPOSITORY "https://github.com/Galfurian/cpp_string_utils.git"
+    GIT_TAG main
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+
+# Retrieve the properties related to the content.
+FetchContent_GetProperties(ustr)
+# If not populated, make the content available.
+if(NOT ustr_POPULATED)
+    message(STATUS "Retrieving `ustr`...")
+    # Ensures the named dependencies have been populated.
+    FetchContent_MakeAvailable(ustr)
+    # Hide fetchcontent variables, otherwise with ccmake it's a mess.
+    mark_as_advanced(FORCE
+        FETCHCONTENT_UPDATES_DISCONNECTED_USTR
+        FETCHCONTENT_SOURCE_DIR_USTR
+    )
+endif()
+# Inlcude header directories and set the library.
+target_include_directories(${PROJECT_NAME} PUBLIC ${ustr_SOURCE_DIR}/include)
 
 # -----------------------------------------------------------------------------
 # EXAMPLES
@@ -96,10 +124,8 @@ if(${PROJECT_NAME}_BUILD_EXAMPLES)
         
     # Add the actions example.
     add_executable(${PROJECT_NAME}_actions ${PROJECT_SOURCE_DIR}/examples/actions.cpp)
-    # Inlcude header directories.
-    target_include_directories(${PROJECT_NAME}_actions PUBLIC ${PROJECT_SOURCE_DIR}/include)
-    # Set compilation flags.
-    target_compile_options(${PROJECT_NAME}_actions PUBLIC ${MUDINT_COMPILE_OPTIONS})
+    # Set the linked libraries.
+    target_link_libraries(${PROJECT_NAME}_actions PUBLIC ${PROJECT_NAME})
 
 endif()
 

@@ -2,12 +2,22 @@
 
 #pragma once
 
+#include <climits>
 #include <iostream>
 
-#include "ustr.hpp"
+#include <ustr/check.hpp>
+#include <ustr/manipulate.hpp>
+#include <ustr/utility.hpp>
 
 namespace interpreter
 {
+
+/// @brief JSON parser configuration.
+namespace config
+{
+/// @brief The words for all, by default "all".
+extern std::vector<std::string> all;
+} // namespace config
 
 /// @brief Allows to easily manage input arguments from players.
 class Argument {
@@ -17,9 +27,9 @@ private:
     /// The string with both the index and the quantity removed.
     std::string content;
     /// The provided index.
-    int index;
+    std::size_t index;
     /// The provided quantity.
-    int quantity;
+    std::size_t quantity;
     /// Struct containing all the flags associated with this argument.
     struct prefix_t {
         /// The 'all.' prefix was specified.
@@ -37,212 +47,58 @@ private:
 
 public:
     /// @brief Constructor.
-    explicit Argument(const std::string &_original)
-        : original(_original), content(_original), index(1), quantity(1),
-          prefix(false, false, false)
-    {
-        // First, evaluate the quantity.
-        this->evaluateQuantity();
-        // Then, evaluate the index.
-        this->evaluateIndex();
-    }
+    explicit Argument(const std::string &_original);
 
-    inline void parse(const std::string &_original)
-    {
-        original = _original, content = _original, index = 1, quantity = 1;
-        prefix = prefix_t(false, false, false);
-        // First, evaluate the quantity.
-        this->evaluateQuantity();
-        // Then, evaluate the index.
-        this->evaluateIndex();
-    }
+    void parse(const std::string &_original);
 
-    inline size_t length() const
-    {
-        return content.length();
-    }
+    size_t length() const;
 
-    inline bool empty() const
-    {
-        return content.empty();
-    }
+    bool empty() const;
 
     /// Provides the original argument.
-    inline std::string getOriginal() const
-    {
-        return original;
-    }
+    std::string getOriginal() const;
 
     /// Provides the content with both index and quantity removed.
-    inline std::string getContent() const
-    {
-        return content;
-    }
+    std::string getContent() const;
 
     /// Provides the index.
-    inline int getIndex() const
-    {
-        return index;
-    }
+    std::size_t getIndex() const;
 
     /// Provides the quantity.
-    inline int getQuantity() const
-    {
-        return quantity;
-    }
+    std::size_t getQuantity() const;
 
     /// @brief Checks if there is only one prefix, or there is no prefix.
-    inline bool hasOnlyOnePrefix() const
-    {
-        return ((prefix.all + prefix.quantity + prefix.index) == 1) ||
-               !(prefix.all & prefix.quantity & prefix.index);
-    }
+    bool hasOnlyOnePrefix() const;
 
     /// Checks if the prefix "all." was specified.
-    inline bool hasPrefixAll() const
-    {
-        return prefix.all;
-    }
+    bool hasPrefixAll() const;
 
     /// Checks if the prefix "<quantity>*" was specified.
-    inline bool hasQuantity() const
-    {
-        return prefix.quantity;
-    }
+    bool hasQuantity() const;
 
     /// Checks if the prefix "<index>." was specified.
-    inline bool hasIndex() const
-    {
-        return prefix.index;
-    }
+    bool hasIndex() const;
 
     /// Checks if the prefix "all." was present.
-    inline bool meansAll() const
-    {
-        std::string lower_original = ustr::toLower(original);
-        return lower_original == "all" || lower_original == "tutto";
-    }
+    bool meansAll() const;
 
     /// Sets the content of the argument.
-    inline void setString(std::string const &s)
-    {
-        original = content = s;
-        // First, evaluate the quantity.
-        this->evaluateQuantity();
-        // Then, evaluate the index.
-        this->evaluateIndex();
-    }
+    void setString(std::string const &s);
 
-    template <typename T>
-    inline T toNumber() const
-    {
-        return ustr::toNumber<T>(content);
-    }
+    bool operator==(const std::string &rhs) const;
 
-    inline bool isNumber() const
-    {
-        return ustr::isNumber(content);
-    }
+    char operator[](size_t rhs) const;
 
-    inline bool isAbbrev(std::string const &master, size_t minLength = 3) const
-    {
-        return ustr::isAbbrev(master, content, minLength);
-    }
+    char &operator[](size_t rhs);
 
-    inline bool operator==(const std::string &rhs) const
-    {
-        return content == rhs;
-    }
-
-    inline char operator[](size_t rhs) const
-    {
-        return content[rhs];
-    }
-
-    inline char &operator[](size_t rhs)
-    {
-        return content[rhs];
-    }
-
-    inline friend std::ostream &operator<<(std::ostream &lhs, const Argument &rhs)
-    {
-        lhs << rhs.content;
-        return lhs;
-    }
+    friend std::ostream &operator<<(std::ostream &lhs, const Argument &rhs);
 
 private:
     /// Evaluates the index.
-    void evaluateIndex()
-    {
-        // If the entire string is a number, skip it.
-        if (ustr::isNumber(content)) {
-            return;
-        }
-        // Otherwise try to find a number if there is one.
-        std::string::size_type pos = content.find('.');
-        if (pos == std::string::npos) {
-            return;
-        }
-        // Extract the digits.
-        std::string digits = content.substr(0, pos);
-        // Check the digits.
-        if (ustr::isNumber(digits)) {
-            // Get the number and set it.
-            int number = ustr::toNumber<int>(digits);
-            if ((number >= 0) && (number < INT_MAX)) {
-                // Set the number.
-                index = number;
-            }
-            // Set the prefix flag.
-            prefix.index = true;
-            // Remove the digits.
-            content = content.substr(pos + 1, content.size());
-        } else {
-            std::string lower_digits = ustr::toLower(digits);
-            if ((lower_digits == "all") || (lower_digits == "tutto")) {
-                // Set the prefix flag.
-                prefix.all = true;
-                // Remove the quantity.
-                content = content.substr(pos + 1, content.size());
-            }
-        }
-    }
+    void evaluateIndex();
 
     /// Evaluates the quantity.
-    void evaluateQuantity()
-    {
-        // If the entire string is a number, skip it.
-        if (ustr::isNumber(content)) {
-            return;
-        }
-        // Otherwise try to find a number if there is one.
-        std::string::size_type pos = content.find('*');
-        if (pos == std::string::npos) {
-            return;
-        }
-        // Extract the digits.
-        std::string digits = content.substr(0, pos);
-        // Check the digits.
-        if (ustr::isNumber(digits)) {
-            // Set the prefix flag.
-            prefix.quantity = true;
-            // Get the number and set it.
-            int number = ustr::toNumber<int>(digits);
-            if ((number >= 0) && (number < INT_MAX)) {
-                quantity = number;
-            }
-            // Remove the digits.
-            content = content.substr(pos + 1, content.size());
-        } else {
-            std::string lower_digits = ustr::toLower(digits);
-            if ((lower_digits == "all") || (lower_digits == "tutto")) {
-                // Set the prefix flag.
-                prefix.all = true;
-                // Remove the quantity.
-                content = content.substr(pos + 1, content.size());
-            }
-        }
-    }
+    void evaluateQuantity();
 };
 
 } // namespace interpreter
