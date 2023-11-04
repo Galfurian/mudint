@@ -15,8 +15,25 @@ namespace interpreter
 /// @brief JSON parser configuration.
 namespace config
 {
-/// @brief The words for all, by default "all".
-extern std::vector<std::string> all;
+/// @brief The list of words meaning "all".
+extern std::vector<std::string> list_of_all;
+/// @brief The list of words to ingnore.
+extern std::vector<std::string> list_of_ingnore;
+/// @brief The list of symbols for specifying a quantity.
+extern std::string list_of_symbols_multiplier;
+/// @brief The list of symbols for specifying an index.
+extern std::string list_of_symbols_index;
+
+/// @brief Checks if the given word means all.
+/// @param word the word to check.
+/// @return true if it means all, false otherwise.
+bool means_all(const std::string &word);
+
+/// @brief Checks if the given word must be ignored.
+/// @param word the word to check.
+/// @return true if it must be ignored, false otherwise.
+bool must_ignore(const std::string &word);
+
 } // namespace config
 
 /// @brief Allows to easily manage input arguments from players.
@@ -47,58 +64,84 @@ private:
 
 public:
     /// @brief Constructor.
+    /// @param _original the orginal content of the argument.
     explicit Argument(const std::string &_original);
 
+    /// @brief Parse the given string and store the details inside the argument.
+    /// @param _original the orginal content of the argument.
     void parse(const std::string &_original);
 
-    size_t length() const;
+    /// @brief The length of the `content` not the `original` string.
+    /// @return the length.
+    std::size_t length() const;
 
+    /// @brief Check if the `content`, not the `original` string, is empty.
+    /// @return true if the content is empty, false otherwise.
     bool empty() const;
 
-    /// Provides the original argument.
-    std::string getOriginal() const;
+    /// @brief Provides the original argument.
+    /// @return the original string.
+    std::string get_original() const;
 
-    /// Provides the content with both index and quantity removed.
-    std::string getContent() const;
+    /// @brief Provides the `content` with both index and quantity removed.
+    /// @return the cleaned content.
+    std::string get_content() const;
 
-    /// Provides the index.
-    std::size_t getIndex() const;
+    /// @brief Provides the index extracted from the `original`.
+    /// @return the extracted index.
+    std::size_t get_index() const;
 
-    /// Provides the quantity.
-    std::size_t getQuantity() const;
+    /// @brief Provides the quantity extracted from the `original`.
+    /// @return the extracted quantity.
+    std::size_t get_quantity() const;
 
     /// @brief Checks if there is only one prefix, or there is no prefix.
-    bool hasOnlyOnePrefix() const;
+    /// @return true if only one prefix is provided, false otherwise.
+    bool has_only_one_prefix() const;
 
-    /// Checks if the prefix "all." was specified.
-    bool hasPrefixAll() const;
+    /// @brief Checks if the prefix means `all`.
+    /// @return true if the prefix means `all`, false otherwise.
+    bool has_prefix_all() const;
 
-    /// Checks if the prefix "<quantity>*" was specified.
-    bool hasQuantity() const;
+    /// @brief Checks if the prefix is a quantity.
+    /// @return true if the prefix is a quantity, false otherwise.
+    bool has_quantity() const;
 
-    /// Checks if the prefix "<index>." was specified.
-    bool hasIndex() const;
+    /// @brief Checks if the prefix is an index.
+    /// @return true if the prefix is an index, false otherwise.
+    bool has_index() const;
 
-    /// Checks if the prefix "all." was present.
-    bool meansAll() const;
+    /// @brief Checks if the whole argument means `all`.
+    /// @return true if the whole argument means `all`, false otherwise.
+    bool means_all() const;
 
-    /// Sets the content of the argument.
-    void setString(std::string const &s);
-
+    /// @brief Check if the `content`, not the `original` string, is equal to a given string.
+    /// @param rhs the string to check.
+    /// @return true if they are equal, false otherwise.
     bool operator==(const std::string &rhs) const;
 
-    char operator[](size_t rhs) const;
+    /// @brief Access the character at the given position.
+    /// @param pos the position.
+    /// @return the character at the given position.
+    char operator[](std::size_t pos) const;
 
-    char &operator[](size_t rhs);
+    /// @brief Access the character at the given position.
+    /// @param pos the position.
+    /// @return the character at the given position.
+    char &operator[](std::size_t pos);
 
+    /// @brief Sends to the output stream the argument.
+    /// @param lhs the stream.
+    /// @param rhs the argument.
+    /// @return the stream.
     friend std::ostream &operator<<(std::ostream &lhs, const Argument &rhs);
 
 private:
     /// Evaluates the index.
-    void evaluateIndex();
+    void evaluate_index();
 
     /// Evaluates the quantity.
-    void evaluateQuantity();
+    void evaluate_quantity();
 };
 
 } // namespace interpreter

@@ -170,9 +170,8 @@ if(DOXYGEN_FOUND)
     )
     doxygen_add_docs(
         ${PROJECT_NAME}_documentation
-        ${PROJECT_SOURCE_DIR}/include/interpreter/argument_handler.hpp
+        ${PROJECT_SOURCE_DIR}/include/interpreter/interpreter.hpp
         ${PROJECT_SOURCE_DIR}/include/interpreter/argument.hpp
-        ${PROJECT_SOURCE_DIR}/include/interpreter/ustr.hpp
         ${PROJECT_SOURCE_DIR}/LICENSE.md
         ${PROJECT_SOURCE_DIR}/README.md
     )

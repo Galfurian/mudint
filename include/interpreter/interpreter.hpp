@@ -1,4 +1,4 @@
-/// @file interpreter.cpp
+/// @file interpreter.hpp
 /// @author Enrico Fraccaroli (enry.frak@gmail.com)
 /// @brief Defines the interpreter class.
 
@@ -21,7 +21,9 @@ private:
     std::vector<Argument> arguments;
 
 public:
+    /// @brief Iterator for arguments.
     typedef std::vector<Argument>::iterator iterator;
+    /// @brief Constant iterator for arguments.
     typedef std::vector<Argument>::const_iterator const_iterator;
 
     /// @brief Constructor.
@@ -32,11 +34,11 @@ public:
 
     /// @brief Provides the original input string.
     /// @return a copy of the original string.
-    std::string getOriginal() const;
+    std::string get_original() const;
 
     /// @brief Returns the number of arguments.
     /// @return the number of arguments.
-    size_t size() const;
+    std::size_t size() const;
 
     /// @brief Checks if the vector of arguments is empty.
     /// @return true if there are no arguments.
@@ -62,12 +64,12 @@ public:
     /// @brief Allows to retrieve const reference to argument at given position.
     /// @param position the index at which we retrieve the argument.
     /// @return the retrieved argument
-    Argument &get(const size_t &position);
+    Argument &get(const std::size_t &position);
 
     /// @brief Parse the input string.
     /// @param input the input string.
-    /// @param skip_fill_words if we should skip the fill words.
-    void parse(std::string const &input, bool skip_fill_words = false);
+    /// @param ignore if we should ignore the list of ignored words.
+    void parse(std::string const &input, bool ignore);
 
     /// @brief Finds the argument that mathes the input string.
     /// @param s the input string.
@@ -83,10 +85,10 @@ public:
 
     /// @brief Erase the argument at the given position.
     /// @param position the position where the argument should be removed.
-    void erase(const size_t &position);
+    void erase(const std::size_t &position);
 
     /// @brief Permanently removes the fill words.
-    void removeFillWords();
+    void remove_ignored_words();
 
     /// @brief Prints a log of all the contained arguments.
     void dump() const;
@@ -94,16 +96,12 @@ public:
     /// @brief Allows to retrieve const reference to argument at given position.
     /// @param position the index at which we retrieve the argument.
     /// @return the retrieved argument
-    Argument &operator[](const size_t &position);
+    Argument &operator[](const std::size_t &position);
 
     /// @brief Allows to retrieve const reference to argument at given position.
     /// @param position the index at which we retrieve the argument.
     /// @return the retrieved argument
-    const Argument &operator[](const size_t &position) const;
-
-private:
-    /// @brief Checks if the given argument is a fill word.
-    bool isFillWord(const std::string &argument) const;
+    const Argument &operator[](const std::size_t &position) const;
 };
 
 } // namespace interpreter

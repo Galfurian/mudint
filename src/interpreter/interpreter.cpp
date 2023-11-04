@@ -7,7 +7,7 @@
 namespace interpreter
 {
 
-std::string Interpreter::getOriginal() const
+std::string Interpreter::get_original() const
 {
     return original;
 }
@@ -42,12 +42,12 @@ Interpreter::const_iterator Interpreter::end() const
     return arguments.end();
 }
 
-Argument &Interpreter::get(const size_t &position)
+Argument &Interpreter::get(const std::size_t &position)
 {
     return arguments.at(position);
 }
 
-void Interpreter::parse(std::string const &input, bool skip_fill_words)
+void Interpreter::parse(std::string const &input, bool ignore)
 {
     if (!input.empty()) {
         // Save the original string.
@@ -60,10 +60,9 @@ void Interpreter::parse(std::string const &input, bool skip_fill_words)
         std::vector<std::string>::const_iterator it;
         // Iterate the words and add them to the list of arguments.
         for (it = words.begin(); it != words.end(); ++it) {
-            if (skip_fill_words && this->isFillWord(*it)) {
-                continue;
+            if (!ignore || !interpreter::config::must_ignore(*it)) {
+                arguments.push_back(Argument(*it));
             }
-            arguments.push_back(Argument(*it));
         }
     }
 }
@@ -72,11 +71,11 @@ const Argument *Interpreter::find(std::string const &s, bool exact) const
 {
     for (const_iterator it = arguments.begin(); it != arguments.end(); ++it) {
         if (exact) {
-            if (it->getContent() == s) {
+            if (it->get_content() == s) {
                 return &(*it);
             }
         } else {
-            if (ustr::begin_with(it->getContent(), s, false, 0)) {
+            if (ustr::begin_with(it->get_content(), s, false, 0)) {
                 return &(*it);
             }
         }
@@ -93,8 +92,8 @@ std::string Interpreter::substr(std::size_t _start, std::size_t _end) const
         _end = arguments.size();
     }
     std::string result;
-    for (size_t it = _start; it < _end; ++it) {
-        result.append(arguments[it].getOriginal());
+    for (std::size_t it = _start; it < _end; ++it) {
+        result.append(arguments[it].get_original());
         if (it != (arguments.size() - 1)) {
             result.push_back(' ');
         }
@@ -102,7 +101,7 @@ std::string Interpreter::substr(std::size_t _start, std::size_t _end) const
     return result;
 }
 
-void Interpreter::erase(const size_t &position)
+void Interpreter::erase(const std::size_t &position)
 {
     if (position < arguments.size()) {
         std::vector<Argument>::iterator it = arguments.begin();
@@ -113,11 +112,11 @@ void Interpreter::erase(const size_t &position)
     }
 }
 
-void Interpreter::removeFillWords()
+void Interpreter::remove_ignored_words()
 {
     iterator it = arguments.begin();
     while (it != arguments.end()) {
-        if (this->isFillWord(it->getContent())) {
+        if (interpreter::config::must_ignore(it->get_content())) {
             it = arguments.erase(it);
         } else {
             ++it;
@@ -127,26 +126,26 @@ void Interpreter::removeFillWords()
 
 void Interpreter::dump() const
 {
-    for (size_t it = 0; it < arguments.size(); ++it) {
+    for (std::size_t it = 0; it < arguments.size(); ++it) {
         const interpreter::Argument &argument = arguments[it];
         std::cout << std::setw(2) << std::right << it << " | ";
-        std::cout << std::setw(12) << std::left << argument.getOriginal();
-        std::cout << std::setw(12) << std::left << argument.getContent() << " | ";
-        if (argument.hasIndex()) {
-            std::cout << " Index: " << std::setw(2) << argument.getIndex() << " ";
+        std::cout << std::setw(12) << std::left << argument.get_original();
+        std::cout << std::setw(12) << std::left << argument.get_content() << " | ";
+        if (argument.has_index()) {
+            std::cout << " Index: " << std::setw(2) << argument.get_index() << " ";
         }
-        if (argument.hasQuantity()) {
-            std::cout << " Quantity: " << std::setw(2) << argument.getQuantity()
+        if (argument.has_quantity()) {
+            std::cout << " Quantity: " << std::setw(2) << argument.get_quantity()
                       << " ";
         }
-        if (argument.hasPrefixAll()) {
+        if (argument.has_prefix_all()) {
             std::cout << " Quantity: ALL ";
         }
         std::cout << "\n";
     }
 }
 
-Argument &Interpreter::operator[](const size_t &position)
+Argument &Interpreter::operator[](const std::size_t &position)
 {
     if (position >= arguments.size()) {
         static Argument empty("");
@@ -155,28 +154,13 @@ Argument &Interpreter::operator[](const size_t &position)
     return arguments[position];
 }
 
-const Argument &Interpreter::operator[](const size_t &position) const
+const Argument &Interpreter::operator[](const std::size_t &position) const
 {
     if (position >= arguments.size()) {
         static Argument empty("");
         return empty;
     }
     return arguments[position];
-}
-
-bool Interpreter::isFillWord(const std::string &argument) const
-{
-    static const std::string fill_words[] = {
-        "in", "from", "with", "and", "the", "on", "at", "to", "da", "su",
-        "a", "e", "il", "la", "lo", "un", "uno", "una", "con", "\0"
-    };
-    std::string argument_lower = ustr::to_lower(argument);
-    for (int i = 0; fill_words[i] != "\0"; i++) {
-        if (argument_lower == fill_words[i]) {
-            return true;
-        }
-    }
-    return false;
 }
 
 } // namespace interpreter

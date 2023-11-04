@@ -12,17 +12,17 @@ bool do_say(interpreter::Interpreter &args)
 
 bool do_look(interpreter::Interpreter &args)
 {
-    // Remove fill words.
-    args.removeFillWords();
+    // Remove ignored words.
+    args.remove_ignored_words();
 
     // Error checking.
-    if (args[0].hasPrefixAll() || args[0].hasQuantity()) {
+    if (args[0].has_prefix_all() || args[0].has_quantity()) {
         std::cerr << KRED << "[Arg. 1] You cannot specify a quantity.\n"
                   << RST;
         return false;
     }
     // Error checking (it is safe even if the container is not provided).
-    if (args[1].hasPrefixAll() || args[1].hasQuantity()) {
+    if (args[1].has_prefix_all() || args[1].has_quantity()) {
         std::cerr << KRED << "[Arg. 2] You cannot specify a quantity.\n"
                   << RST;
         return false;
@@ -30,8 +30,8 @@ bool do_look(interpreter::Interpreter &args)
 
     // The object.
     std::cout << "You look";
-    if (args[0].hasIndex()) {
-        size_t index = args[0].getIndex();
+    if (args[0].has_index()) {
+        std::size_t index = args[0].get_index();
         std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
     }
     std::cout << " " << KGRN << args[0] << RST << " ";
@@ -39,8 +39,8 @@ bool do_look(interpreter::Interpreter &args)
     // The container (if provided).
     if (args.size() == 2) {
         std::cout << "in";
-        if (args[1].hasIndex()) {
-            size_t index = args[1].getIndex();
+        if (args[1].has_index()) {
+            std::size_t index = args[1].get_index();
             std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
         }
         std::cout << " " << KGRN << args[1] << RST << " ";
@@ -51,11 +51,11 @@ bool do_look(interpreter::Interpreter &args)
 
 bool do_take(interpreter::Interpreter &args)
 {
-    // Remove fill words.
-    args.removeFillWords();
+    // Remove ignored words.
+    args.remove_ignored_words();
 
     // Error checking.
-    if (args[1].hasPrefixAll() || args[1].hasQuantity()) {
+    if (args[1].has_prefix_all() || args[1].has_quantity()) {
         std::cerr << KRED << "[Arg. 2] You cannot specify a quantity.\n"
                   << RST;
         return false;
@@ -63,12 +63,12 @@ bool do_take(interpreter::Interpreter &args)
 
     // The object.
     std::cout << "You take";
-    if (args[0].hasPrefixAll()) {
+    if (args[0].has_prefix_all()) {
         std::cout << " " << KMAG << "all" << RST;
-    } else if (args[0].hasQuantity()) {
-        std::cout << " " << KMAG << args[0].getQuantity() << RST << " per";
-    } else if (args[0].hasIndex()) {
-        size_t index = args[0].getIndex();
+    } else if (args[0].has_quantity()) {
+        std::cout << " " << KMAG << args[0].get_quantity() << RST << " per";
+    } else if (args[0].has_index()) {
+        std::size_t index = args[0].get_index();
         std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
     }
     std::cout << " " << KGRN << args[0] << RST << " ";
@@ -76,8 +76,8 @@ bool do_take(interpreter::Interpreter &args)
     // The container (if provided).
     if (args.size() == 2) {
         std::cout << "from";
-        if (args[1].hasIndex()) {
-            size_t index = args[1].getIndex();
+        if (args[1].has_index()) {
+            std::size_t index = args[1].get_index();
             std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
         }
         std::cout << " " << KGRN << args[1] << RST << " ";
@@ -88,8 +88,8 @@ bool do_take(interpreter::Interpreter &args)
 
 bool do_put(interpreter::Interpreter &args)
 {
-    // Remove fill words.
-    args.removeFillWords();
+    // Remove ignored words.
+    args.remove_ignored_words();
 
     // Check if the user provided the container.
     if (args.size() != 2) {
@@ -98,7 +98,7 @@ bool do_put(interpreter::Interpreter &args)
         return false;
     }
     // Error checking.
-    if (args[1].hasPrefixAll() || args[1].hasQuantity()) {
+    if (args[1].has_prefix_all() || args[1].has_quantity()) {
         std::cerr << KRED << "[Arg. 2] You cannot specify a quantity.\n"
                   << RST;
         return false;
@@ -106,20 +106,20 @@ bool do_put(interpreter::Interpreter &args)
 
     // Run the command.
     std::cout << "You put";
-    if (args[0].hasPrefixAll()) {
+    if (args[0].has_prefix_all()) {
         std::cout << " " << KMAG << "all" << RST;
-    } else if (args[0].hasQuantity()) {
-        std::cout << " " << KMAG << args[0].getQuantity() << RST << " per";
-    } else if (args[0].hasIndex()) {
-        std::size_t index = args[0].getIndex();
+    } else if (args[0].has_quantity()) {
+        std::cout << " " << KMAG << args[0].get_quantity() << RST << " per";
+    } else if (args[0].has_index()) {
+        std::size_t index = args[0].get_index();
         std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
     }
     std::cout << " " << KGRN << args[0] << RST << " ";
 
     // Container.
     std::cout << "in";
-    if (args[1].hasIndex()) {
-        std::size_t index = args[1].getIndex();
+    if (args[1].has_index()) {
+        std::size_t index = args[1].get_index();
         std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
     }
     std::cout << " " << KGRN << args[1] << RST << " ";
@@ -153,7 +153,7 @@ void test_input(interpreter::Interpreter &args, const std::string &input)
 {
     std::cout << "> " << input << "\n";
     // Parse the input.
-    args.parse(input);
+    args.parse(input, false);
     // Handle the input.
     handle_input(args);
     std::cout << "\n";
@@ -186,7 +186,7 @@ int main(int, char **)
         std::cout << "> ";
         std::getline(std::cin, input);
         // Parse the input.
-        args.parse(input);
+        args.parse(input, false);
         // Handle the input.
         handle_input(args);
         std::cout << "\n";
