@@ -168,7 +168,7 @@ if(DOXYGEN_FOUND)
         ${doxygenawesome_SOURCE_DIR}/doxygen-awesome-darkmode-toggle.js
     )
     doxygen_add_docs(
-        documentation
+        ${PROJECT_NAME}_documentation
         ${PROJECT_SOURCE_DIR}/include/interpreter/interpreter.hpp
         ${PROJECT_SOURCE_DIR}/include/interpreter/argument.hpp
         ${PROJECT_SOURCE_DIR}/LICENSE.md
