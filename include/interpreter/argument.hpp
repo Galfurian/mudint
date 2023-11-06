@@ -48,19 +48,7 @@ private:
     /// The provided quantity.
     std::size_t quantity;
     /// Struct containing all the flags associated with this argument.
-    struct prefix_t {
-        /// The 'all.' prefix was specified.
-        bool all;
-        /// The '<quantity>*' postfix was specified.
-        bool quantity;
-        /// The '<index>.' postfix was specified.
-        bool index;
-        /// @brief Constructor.
-        prefix_t(bool _all, bool _quantity, bool _index)
-            : all(_all), quantity(_quantity), index(_index)
-        {
-        }
-    } prefix;
+    unsigned prefix;
 
 public:
     /// @brief Constructor.

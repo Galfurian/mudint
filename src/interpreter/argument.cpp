@@ -9,6 +9,50 @@
 
 #include "interpreter/argument.hpp"
 
+/// @brief Sets the given bit.
+/// @param value the value to modify.
+/// @param bit the bit to manipulate.
+/// @return the modified value.
+template <typename T>
+static inline T bitmask_set(T value, T bitmask)
+{
+    return value | bitmask;
+}
+
+/// @brief Clears the given bit.
+/// @param value the value to modify.
+/// @param bit the bit to manipulate.
+/// @return the modified value.
+template <typename T>
+static inline T bitmask_clear(T value, T bitmask)
+{
+    return value & ~bitmask;
+}
+
+/// @brief Flips the given bit.
+/// @param value the value to modify.
+/// @param bit the bit to manipulate.
+/// @return the modified value.
+template <typename T>
+static inline T bitmask_flip(T value, T bitmask)
+{
+    return value ^ bitmask;
+}
+
+/// @brief Checks if the given bit is 1.
+/// @param value the value to modify.
+/// @param bit the bit to check.
+/// @return true if the bit is 1, false otherwise.
+template <typename T>
+static inline bool bitmask_check(T value, T bitmask)
+{
+    return value & bitmask;
+}
+
+#define FLAG_ALL      0u ///< The 'all.' prefix was specified.
+#define FLAG_QUANTITY 1u ///< The '<quantity>*' postfix was specified.
+#define FLAG_INDEX    2u ///< The '<index>.' postfix was specified.
+
 namespace interpreter
 {
 
@@ -38,7 +82,7 @@ bool must_ignore(const std::string &word)
 
 Argument::Argument(const std::string &_original)
     : original(_original), content(_original), index(1), quantity(1),
-      prefix(false, false, false)
+      prefix(0)
 {
     // First, evaluate the quantity.
     this->evaluate_quantity();
@@ -52,7 +96,7 @@ void Argument::parse(const std::string &_original)
     content  = _original;
     index    = 1;
     quantity = 1;
-    prefix   = prefix_t(false, false, false);
+    prefix   = 0;
     // First, evaluate the quantity.
     this->evaluate_quantity();
     // Then, evaluate the index.
@@ -91,23 +135,28 @@ std::size_t Argument::get_quantity() const
 
 bool Argument::has_only_one_prefix() const
 {
-    return ((prefix.all + prefix.quantity + prefix.index) == 1) ||
-           !(prefix.all & prefix.quantity & prefix.index);
+    if (!bitmask_check(prefix, FLAG_ALL | FLAG_QUANTITY | FLAG_INDEX)) {
+        return false;
+    }
+    if (!bitmask_check(prefix, FLAG_ALL) && !bitmask_check(prefix, FLAG_QUANTITY) && !bitmask_check(prefix, FLAG_INDEX)) {
+        return false;
+    }
+    return true;
 }
 
 bool Argument::has_prefix_all() const
 {
-    return prefix.all;
+    return bitmask_check(prefix, FLAG_ALL);
 }
 
 bool Argument::has_quantity() const
 {
-    return prefix.quantity;
+    return bitmask_check(prefix, FLAG_QUANTITY);
 }
 
 bool Argument::has_index() const
 {
-    return prefix.index;
+    return bitmask_check(prefix, FLAG_INDEX);
 }
 
 bool Argument::means_all() const
@@ -157,16 +206,16 @@ void Argument::evaluate_index()
             // Set the number.
             index = number;
             // Set the prefix flag.
-            prefix.index = true;
+            prefix = bitmask_set(prefix, FLAG_INDEX);
         }
         // Remove the digits.
         content = content.substr(pos + 1, content.size());
     } else {
         if (interpreter::config::means_all(digits)) {
-            // Set the prefix flag.
-            prefix.all = true;
             // Remove the quantity.
             content = content.substr(pos + 1, content.size());
+            // Set the prefix flag.
+            prefix = bitmask_set(prefix, FLAG_ALL);
         }
     }
 }
@@ -192,16 +241,16 @@ void Argument::evaluate_quantity()
             // Set the number.
             quantity = number;
             // Set the prefix flag.
-            prefix.quantity = true;
+            prefix = bitmask_set(prefix, FLAG_QUANTITY);
         }
         // Remove the digits.
         content = content.substr(pos + 1, content.size());
     } else {
         if (interpreter::config::means_all(digits)) {
-            // Set the prefix flag.
-            prefix.all = true;
             // Remove the quantity.
             content = content.substr(pos + 1, content.size());
+            // Set the prefix flag.
+            prefix = bitmask_set(prefix, FLAG_ALL);
         }
     }
 }
