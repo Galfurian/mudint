@@ -7,6 +7,15 @@
 namespace interpreter
 {
 
+Interpreter::Interpreter(const char *input, bool ignore)
+    : original(),
+      arguments()
+{
+    if (input != NULL) {
+        this->parse(input, ignore);
+    }
+}
+
 std::string Interpreter::get_original() const
 {
     return original;

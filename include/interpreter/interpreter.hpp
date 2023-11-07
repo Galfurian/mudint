@@ -28,7 +28,12 @@ public:
 
     /// @brief Constructor.
     explicit Interpreter() = default;
-
+    
+    /// @brief Constructor.
+    /// @param input the string containing the input from the user.
+    /// @param ignore if we should ignore the list of ignored words.
+    explicit Interpreter(const char * input, bool ignore);
+    
     /// @brief Destructor.
     ~Interpreter() = default;
 
