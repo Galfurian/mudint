@@ -93,7 +93,7 @@ endif()
 # -----------------------------------------------------------------------------
 # Retrieve the source.
 FetchContent_Declare(ustr
-    GIT_REPOSITORY "https://github.com/Galfurian/cpp_string_utils.git"
+    GIT_REPOSITORY "https://github.com/Galfurian/ustr.git"
     GIT_TAG main
     GIT_SHALLOW TRUE
     GIT_PROGRESS TRUE
