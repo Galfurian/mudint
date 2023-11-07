@@ -75,13 +75,25 @@ public:
     /// @return the cleaned content.
     std::string get_content() const;
 
+    /// @brief Forces the content to a given string.
+    /// @param _content the new value.
+    void set_content(const std::string &_content);
+
     /// @brief Provides the index extracted from the `original`.
     /// @return the extracted index.
     std::size_t get_index() const;
 
+    /// @brief Forces a new index.
+    /// @param _index the new value.
+    void set_index(std::size_t _index);
+
     /// @brief Provides the quantity extracted from the `original`.
     /// @return the extracted quantity.
     std::size_t get_quantity() const;
+    
+    /// @brief Forces a new quantity.
+    /// @param _quantity the new value.
+    void set_quantity(std::size_t _quantity);
 
     /// @brief Checks if there is only one prefix, or there is no prefix.
     /// @return true if only one prefix is provided, false otherwise.

@@ -123,14 +123,29 @@ std::string Argument::get_content() const
     return content;
 }
 
+void Argument::set_content(const std::string &_content)
+{
+    content = _content;
+}
+
 std::size_t Argument::get_index() const
 {
     return index;
 }
 
+void Argument::set_index(std::size_t _index)
+{
+    index = _index;
+}
+
 std::size_t Argument::get_quantity() const
 {
     return quantity;
+}
+
+void Argument::set_quantity(std::size_t _quantity)
+{
+    quantity = _quantity;
 }
 
 bool Argument::has_only_one_prefix() const
