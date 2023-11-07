@@ -7,11 +7,11 @@
 namespace interpreter
 {
 
-Interpreter::Interpreter(const char *input, bool ignore)
+Interpreter::Interpreter(const std::string &input, bool ignore)
     : original(),
       arguments()
 {
-    if (input != NULL) {
+    if (!input.empty()) {
         this->parse(input, ignore);
     }
 }
