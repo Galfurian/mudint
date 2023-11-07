@@ -90,7 +90,7 @@ public:
     /// @brief Provides the quantity extracted from the `original`.
     /// @return the extracted quantity.
     std::size_t get_quantity() const;
-    
+
     /// @brief Forces a new quantity.
     /// @param _quantity the new value.
     void set_quantity(std::size_t _quantity);
@@ -114,6 +114,18 @@ public:
     /// @brief Checks if the whole argument means `all`.
     /// @return true if the whole argument means `all`, false otherwise.
     bool means_all() const;
+
+    /// @brief Checks if the `original` content was actually a number.
+    /// @return true if it is a number, false otherwise.
+    bool is_number() const;
+
+    /// @brief Transforms the `original` content into an integer value.
+    /// @return the number.
+    template <typename T>
+    T to_number() const
+    {
+        return ustr::to_number<T>(original);
+    }
 
     /// @brief Check if the `content`, not the `original` string, is equal to a given string.
     /// @param rhs the string to check.

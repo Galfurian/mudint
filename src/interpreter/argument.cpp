@@ -179,6 +179,11 @@ bool Argument::means_all() const
     return interpreter::config::means_all(original);
 }
 
+bool Argument::is_number() const
+{
+    return ustr::is_number(original);
+}
+
 bool Argument::operator==(const std::string &rhs) const
 {
     return content == rhs;
