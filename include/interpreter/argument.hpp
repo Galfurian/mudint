@@ -117,8 +117,9 @@ public:
 
     /// @brief Checks if the argument is an abbreviation of the given full string.
     /// @param full_string the full string.
-    /// @return true if the argument is an abbreviation, false otherwise.
-    bool is_abbreviation_of(const std::string & full_string) const;
+    /// @param min_length the minimum length of the abbreviated string.
+    /// @return true if the argument is an abbreviation equally long or longher than min_length, false otherwise.
+    bool is_abbreviation_of(const std::string & full_string, std::size_t min_length) const;
     
     /// @brief Checks if the `original` content was actually a number.
     /// @return true if it is a number, false otherwise.

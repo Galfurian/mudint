@@ -179,9 +179,10 @@ bool Argument::means_all() const
     return interpreter::config::means_all(original);
 }
 
-bool Argument::is_abbreviation_of(const std::string &full_string) const
+bool Argument::is_abbreviation_of(const std::string &full_string, std::size_t min_length) const
 {
-    return (content.size() <= full_string.size()) &&
+    return (content.size() >= min_length) &&
+           (content.size() <= full_string.size()) &&
            std::equal(content.begin(), content.end(), full_string.begin());
 }
 
