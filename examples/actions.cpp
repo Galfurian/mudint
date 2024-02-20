@@ -102,8 +102,13 @@ bool do_take(interpreter::Interpreter &args)
     args.remove_ignored_words();
 
     // Error checking.
-    if (args[1].has_prefix_all() || args[1].has_quantity()) {
-        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify a quantity.\n"
+    if (!args[0].has_only_one_prefix()) {
+        std::cerr << ansi::fg::red << "[Arg. 1] You cannot specify both quantity and index.\n"
+                  << ansi::util::reset;
+        return false;
+    }
+    if ((args.size() == 2) && (!args[1].has_only_one_prefix())) {
+        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify both quantity and index.\n"
                   << ansi::util::reset;
         return false;
     }
@@ -214,6 +219,7 @@ int main(int, char **)
     test_input(args, "take pen");
     test_input(args, "take 2*pen");
     test_input(args, "take 2.pen");
+    test_input(args, "take 2*2.pen");
     test_input(args, "take all.pen");
     test_input(args, "take all*pen");
     test_input(args, "take pen box");

@@ -156,6 +156,9 @@ public:
     friend std::ostream &operator<<(std::ostream &lhs, const Argument &rhs);
 
 private:
+    /// Evaluates the index and quantity.
+    void evaluate_all_prefix();
+
     /// Evaluates the index.
     void evaluate_index();
 
