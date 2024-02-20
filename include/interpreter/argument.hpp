@@ -120,7 +120,7 @@ public:
     /// @param sensitive enables case-sensitive check.
     /// @param min_length the minimum number of characters for the prefix.
     /// @return true if the argument is an abbreviation equally long or longher than min_length, false otherwise.
-    bool is_abbreviation_of(const std::string &full_string, bool sensitive, std::size_t min_length) const;
+    bool is_abbreviation_of(const std::string &full_string, bool sensitive = false, std::size_t min_length = 1) const;
 
     /// @brief Checks if the `original` content was actually a number.
     /// @return true if it is a number, false otherwise.
