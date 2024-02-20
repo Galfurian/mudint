@@ -49,9 +49,9 @@ static inline bool bitmask_check(T value, T bitmask)
     return value & bitmask;
 }
 
-#define FLAG_ALL      0u ///< The 'all.' prefix was specified.
-#define FLAG_QUANTITY 1u ///< The '<quantity>*' postfix was specified.
-#define FLAG_INDEX    2u ///< The '<index>.' postfix was specified.
+#define FLAG_ALL      (1u << 1u) ///< The 'all.' prefix was specified.
+#define FLAG_QUANTITY (1u << 2u) ///< The '<quantity>*' postfix was specified.
+#define FLAG_INDEX    (1u << 3u) ///< The '<index>.' postfix was specified.
 
 namespace interpreter
 {
@@ -179,11 +179,9 @@ bool Argument::means_all() const
     return interpreter::config::means_all(original);
 }
 
-bool Argument::is_abbreviation_of(const std::string &full_string, std::size_t min_length) const
+bool Argument::is_abbreviation_of(const std::string &full_string, bool sensitive, std::size_t min_length) const
 {
-    return (content.size() >= min_length) &&
-           (content.size() <= full_string.size()) &&
-           std::equal(content.begin(), content.end(), full_string.begin());
+    return ustr::is_abbreviation_of(content, full_string, sensitive, min_length);
 }
 
 bool Argument::is_number() const
@@ -233,7 +231,7 @@ void Argument::evaluate_index()
             // Set the number.
             index = number;
             // Set the prefix flag.
-            prefix = bitmask_set(prefix, FLAG_INDEX);
+            prefix |= FLAG_INDEX;
         }
         // Remove the digits.
         content = content.substr(pos + 1, content.size());
@@ -242,7 +240,9 @@ void Argument::evaluate_index()
             // Remove the quantity.
             content = content.substr(pos + 1, content.size());
             // Set the prefix flag.
-            prefix = bitmask_set(prefix, FLAG_ALL);
+            prefix |= FLAG_ALL;
+
+            std::cout << content << " : " << prefix << "\n";
         }
     }
 }
@@ -268,7 +268,7 @@ void Argument::evaluate_quantity()
             // Set the number.
             quantity = number;
             // Set the prefix flag.
-            prefix = bitmask_set(prefix, FLAG_QUANTITY);
+            prefix |= FLAG_QUANTITY;
         }
         // Remove the digits.
         content = content.substr(pos + 1, content.size());
@@ -277,7 +277,9 @@ void Argument::evaluate_quantity()
             // Remove the quantity.
             content = content.substr(pos + 1, content.size());
             // Set the prefix flag.
-            prefix = bitmask_set(prefix, FLAG_ALL);
+            prefix |= FLAG_ALL;
+
+            std::cout << content << " : " << prefix << "\n";
         }
     }
 }
