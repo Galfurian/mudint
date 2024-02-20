@@ -179,6 +179,12 @@ bool Argument::means_all() const
     return interpreter::config::means_all(original);
 }
 
+bool Argument::is_abbreviation_of(const std::string &full_string) const
+{
+    return (content.size() <= full_string.size()) &&
+           std::equal(content.begin(), content.end(), full_string.begin());
+}
+
 bool Argument::is_number() const
 {
     return ustr::is_number(original);
