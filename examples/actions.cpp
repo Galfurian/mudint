@@ -179,6 +179,34 @@ bool do_put(interpreter::Interpreter &args)
     return true;
 }
 
+bool do_configure(interpreter::Interpreter &args)
+{
+    // Set the list of options.
+    enum option_type_t {
+        option_type_none,
+        option_type_name,
+        option_type_address,
+    };
+    std::vector<interpreter::Option> option_list = {
+        { option_type_name, { "name" } },
+        { option_type_address, { "address" } },
+    };
+    unsigned option = args[0].map_to_option(
+        option_list,
+        [](const std::string &content, const std::string &name) {
+            return ustr::is_abbreviation_of(content, name, false, 3);
+        });
+
+    if (option == option_type_name) {
+        std::cout << "You selected " << ansi::fg::magenta << "name" << ansi::util::reset;
+    } else if (option == option_type_address) {
+        std::cout << "You selected " << ansi::fg::magenta << "address" << ansi::util::reset;
+    } else {
+        std::cout << ansi::fg::red << "Selection is not valid" << ansi::util::reset;
+    }
+    return false;
+}
+
 bool handle_input(interpreter::Interpreter &args)
 {
     // Handle the input.
@@ -197,6 +225,10 @@ bool handle_input(interpreter::Interpreter &args)
     if (args[0] == "put") {
         args.erase(0);
         return do_put(args);
+    }
+    if (ustr::is_abbreviation_of(args[0].get_content(), "configure", false, 3)) {
+        args.erase(0);
+        return do_configure(args);
     }
     return false;
 }

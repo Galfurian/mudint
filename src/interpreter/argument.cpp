@@ -94,17 +94,6 @@ void Argument::set_index(std::size_t _index)
     index = _index;
 }
 
-unsigned Argument::map_to_option(const std::vector<Option> &options, bool sensitive, bool begins_with, bool ends_with, bool exact_match) const
-{
-    std::vector<Option>::const_iterator it;
-    for (it = options.begin(); it != options.end(); ++it) {
-        if (ustr::word_is_among(content, it->names, sensitive, begins_with, ends_with, exact_match)) {
-            return it->option;
-        }
-    }
-    return 0;
-}
-
 std::size_t Argument::get_quantity() const
 {
     return quantity;

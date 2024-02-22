@@ -92,7 +92,24 @@ public:
     /// @param _index the new value.
     void set_index(std::size_t _index);
 
-    unsigned map_to_option(const std::vector<Option> &options, bool sensitive, bool begins_with, bool ends_with, bool exact_match) const;
+    /// @brief Checks if the argument maps to one of the options.
+    /// @param options the list of options.
+    /// @param function binary comparison function.
+    /// @return true if at least one of the conditions are true.
+    template <typename Fun>
+    unsigned map_to_option(const std::vector<Option> &options, Fun function) const
+    {
+        std::vector<Option>::const_iterator option_it;
+        std::vector<std::string>::const_iterator name_it;
+        for (option_it = options.begin(); option_it != options.end(); ++option_it) {
+            for (name_it = option_it->names.begin(); name_it != option_it->names.end(); ++name_it) {
+                if (function(content, *name_it)) {
+                    return option_it->option;
+                }
+            }
+        }
+        return 0;
+    }
 
     /// @brief Provides the quantity extracted from the `original`.
     /// @return the extracted quantity.
