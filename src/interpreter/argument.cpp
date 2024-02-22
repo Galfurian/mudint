@@ -9,49 +9,9 @@
 
 #include "interpreter/argument.hpp"
 
-/// @brief Sets the given bit.
-/// @param value the value to modify.
-/// @param bit the bit to manipulate.
-/// @return the modified value.
-template <typename T>
-static inline T bitmask_set(T value, T bitmask)
-{
-    return value | bitmask;
-}
-
-/// @brief Clears the given bit.
-/// @param value the value to modify.
-/// @param bit the bit to manipulate.
-/// @return the modified value.
-template <typename T>
-static inline T bitmask_clear(T value, T bitmask)
-{
-    return value & ~bitmask;
-}
-
-/// @brief Flips the given bit.
-/// @param value the value to modify.
-/// @param bit the bit to manipulate.
-/// @return the modified value.
-template <typename T>
-static inline T bitmask_flip(T value, T bitmask)
-{
-    return value ^ bitmask;
-}
-
-/// @brief Checks if the given bit is 1.
-/// @param value the value to modify.
-/// @param bit the bit to check.
-/// @return true if the bit is 1, false otherwise.
-template <typename T>
-static inline bool bitmask_check(T value, T bitmask)
-{
-    return value & bitmask;
-}
-
-#define FLAG_ALL      0u ///< The 'all.' prefix was specified.
-#define FLAG_QUANTITY 1u ///< The '<quantity>*' postfix was specified.
-#define FLAG_INDEX    2u ///< The '<index>.' postfix was specified.
+#define FLAG_ALL      (1u << 1u) ///< The 'all.' prefix was specified.
+#define FLAG_QUANTITY (1u << 2u) ///< The '<quantity>*' postfix was specified.
+#define FLAG_INDEX    (1u << 3u) ///< The '<index>.' postfix was specified.
 
 namespace interpreter
 {
@@ -84,10 +44,8 @@ Argument::Argument(const std::string &_original)
     : original(_original), content(_original), index(1), quantity(1),
       prefix(0)
 {
-    // First, evaluate the quantity.
-    this->evaluate_quantity();
-    // Then, evaluate the index.
-    this->evaluate_index();
+    // Evaluate all the prefix.
+    this->evaluate_all_prefix();
 }
 
 void Argument::parse(const std::string &_original)
@@ -97,10 +55,8 @@ void Argument::parse(const std::string &_original)
     index    = 1;
     quantity = 1;
     prefix   = 0;
-    // First, evaluate the quantity.
-    this->evaluate_quantity();
-    // Then, evaluate the index.
-    this->evaluate_index();
+    // Evaluate all the prefix.
+    this->evaluate_all_prefix();
 }
 
 size_t Argument::length() const
@@ -161,10 +117,7 @@ void Argument::set_quantity(std::size_t _quantity)
 
 bool Argument::has_only_one_prefix() const
 {
-    if (!bitmask_check(prefix, FLAG_ALL | FLAG_QUANTITY | FLAG_INDEX)) {
-        return false;
-    }
-    if (!bitmask_check(prefix, FLAG_ALL) && !bitmask_check(prefix, FLAG_QUANTITY) && !bitmask_check(prefix, FLAG_INDEX)) {
+    if ((this->has_prefix_all() + this->has_quantity() + this->has_index()) > 1) {
         return false;
     }
     return true;
@@ -172,22 +125,27 @@ bool Argument::has_only_one_prefix() const
 
 bool Argument::has_prefix_all() const
 {
-    return bitmask_check(prefix, FLAG_ALL);
+    return (prefix & FLAG_ALL) == FLAG_ALL;
 }
 
 bool Argument::has_quantity() const
 {
-    return bitmask_check(prefix, FLAG_QUANTITY);
+    return (prefix & FLAG_QUANTITY) == FLAG_QUANTITY;
 }
 
 bool Argument::has_index() const
 {
-    return bitmask_check(prefix, FLAG_INDEX);
+    return (prefix & FLAG_INDEX) == FLAG_INDEX;
 }
 
 bool Argument::means_all() const
 {
     return interpreter::config::means_all(original);
+}
+
+bool Argument::is_abbreviation_of(const std::string &full_string, bool sensitive, std::size_t min_length) const
+{
+    return ustr::is_abbreviation_of(content, full_string, sensitive, min_length);
 }
 
 bool Argument::is_number() const
@@ -216,6 +174,21 @@ std::ostream &operator<<(std::ostream &lhs, const Argument &rhs)
     return lhs;
 }
 
+void Argument::evaluate_all_prefix()
+{
+    // Get the position of index and quantity.
+    std::string::size_type index_pos    = content.find_first_of(interpreter::config::list_of_symbols_index);
+    std::string::size_type quantity_pos = content.find_first_of(interpreter::config::list_of_symbols_multiplier);
+    // Evaluate which one comes first.
+    if (index_pos < quantity_pos) {
+        this->evaluate_index();
+        this->evaluate_quantity();
+    } else {
+        this->evaluate_quantity();
+        this->evaluate_index();
+    }
+}
+
 void Argument::evaluate_index()
 {
     // If the entire string is a number, skip it.
@@ -237,7 +210,7 @@ void Argument::evaluate_index()
             // Set the number.
             index = number;
             // Set the prefix flag.
-            prefix = bitmask_set(prefix, FLAG_INDEX);
+            prefix |= FLAG_INDEX;
         }
         // Remove the digits.
         content = content.substr(pos + 1, content.size());
@@ -246,7 +219,7 @@ void Argument::evaluate_index()
             // Remove the quantity.
             content = content.substr(pos + 1, content.size());
             // Set the prefix flag.
-            prefix = bitmask_set(prefix, FLAG_ALL);
+            prefix |= FLAG_ALL;
         }
     }
 }
@@ -272,7 +245,7 @@ void Argument::evaluate_quantity()
             // Set the number.
             quantity = number;
             // Set the prefix flag.
-            prefix = bitmask_set(prefix, FLAG_QUANTITY);
+            prefix |= FLAG_QUANTITY;
         }
         // Remove the digits.
         content = content.substr(pos + 1, content.size());
@@ -281,7 +254,7 @@ void Argument::evaluate_quantity()
             // Remove the quantity.
             content = content.substr(pos + 1, content.size());
             // Set the prefix flag.
-            prefix = bitmask_set(prefix, FLAG_ALL);
+            prefix |= FLAG_ALL;
         }
     }
 }

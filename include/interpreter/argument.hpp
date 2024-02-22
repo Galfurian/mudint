@@ -122,6 +122,13 @@ public:
     /// @return true if the whole argument means `all`, false otherwise.
     bool means_all() const;
 
+    /// @brief Checks if the argument is an abbreviation of the given full string.
+    /// @param full_string the full string.
+    /// @param sensitive enables case-sensitive check.
+    /// @param min_length the minimum number of characters for the prefix.
+    /// @return true if the argument is an abbreviation equally long or longher than min_length, false otherwise.
+    bool is_abbreviation_of(const std::string &full_string, bool sensitive = false, std::size_t min_length = 1) const;
+
     /// @brief Checks if the `original` content was actually a number.
     /// @return true if it is a number, false otherwise.
     bool is_number() const;
@@ -156,6 +163,9 @@ public:
     friend std::ostream &operator<<(std::ostream &lhs, const Argument &rhs);
 
 private:
+    /// Evaluates the index and quantity.
+    void evaluate_all_prefix();
+
     /// Evaluates the index.
     void evaluate_index();
 

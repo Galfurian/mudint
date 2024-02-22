@@ -2,11 +2,58 @@
 #include <interpreter/argument.hpp>
 #include <interpreter/interpreter.hpp>
 
-#include "colors.hpp"
+#include "ansi.hpp"
+
+const char *ansi::fg::black   = "\33[30m";
+const char *ansi::fg::red     = "\33[31m";
+const char *ansi::fg::green   = "\33[32m";
+const char *ansi::fg::yellow  = "\33[33m";
+const char *ansi::fg::blue    = "\33[34m";
+const char *ansi::fg::magenta = "\33[35m";
+const char *ansi::fg::cyan    = "\33[36m";
+const char *ansi::fg::white   = "\33[37m";
+
+const char *ansi::fg::bright_black   = "\33[30;1m";
+const char *ansi::fg::bright_red     = "\33[31;1m";
+const char *ansi::fg::bright_green   = "\33[32;1m";
+const char *ansi::fg::bright_yellow  = "\33[33;1m";
+const char *ansi::fg::bright_blue    = "\33[34;1m";
+const char *ansi::fg::bright_magenta = "\33[35;1m";
+const char *ansi::fg::bright_cyan    = "\33[36;1m";
+const char *ansi::fg::bright_white   = "\33[37;1m";
+
+const char *ansi::bg::black   = "\33[40m";
+const char *ansi::bg::red     = "\33[41m";
+const char *ansi::bg::green   = "\33[42m";
+const char *ansi::bg::yellow  = "\33[43m";
+const char *ansi::bg::blue    = "\33[44m";
+const char *ansi::bg::magenta = "\33[45m";
+const char *ansi::bg::cyan    = "\33[46m";
+const char *ansi::bg::white   = "\33[47m";
+
+const char *ansi::util::reset     = "\33[0m";
+const char *ansi::util::bold      = "\33[1m";
+const char *ansi::util::italic    = "\33[3m";
+const char *ansi::util::underline = "\33[4m";
+const char *ansi::util::reverse   = "\33[7m";
+const char *ansi::util::clear     = "\33[2J";
+const char *ansi::util::clearline = "\33[2K";
+const char *ansi::util::up        = "\33[1A";
+const char *ansi::util::down      = "\33[1B";
+const char *ansi::util::right     = "\33[1C";
+const char *ansi::util::left      = "\33[1D";
+const char *ansi::util::nextline  = "\33[1E";
+const char *ansi::util::prevline  = "\33[1F";
 
 bool do_say(interpreter::Interpreter &args)
 {
-    std::cout << "You say '" << KCYN << args.substr(0) << RST << "'\n";
+    std::string message = ustr::trim(args.substr(0));
+    if (ustr::end_with(message, "?", false, 0)) {
+        std::cout << "You ask '" << ansi::fg::yellow;
+    } else {
+        std::cout << "You say '" << ansi::fg::cyan;
+    }
+    std::cout << ansi::util::italic << message << ansi::util::reset << "'\n";
     return true;
 }
 
@@ -17,14 +64,14 @@ bool do_look(interpreter::Interpreter &args)
 
     // Error checking.
     if (args[0].has_prefix_all() || args[0].has_quantity()) {
-        std::cerr << KRED << "[Arg. 1] You cannot specify a quantity.\n"
-                  << RST;
+        std::cerr << ansi::fg::red << "[Arg. 1] You cannot specify a quantity.\n"
+                  << ansi::util::reset;
         return false;
     }
     // Error checking (it is safe even if the container is not provided).
     if (args[1].has_prefix_all() || args[1].has_quantity()) {
-        std::cerr << KRED << "[Arg. 2] You cannot specify a quantity.\n"
-                  << RST;
+        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify a quantity.\n"
+                  << ansi::util::reset;
         return false;
     }
 
@@ -32,18 +79,18 @@ bool do_look(interpreter::Interpreter &args)
     std::cout << "You look";
     if (args[0].has_index()) {
         std::size_t index = args[0].get_index();
-        std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
+        std::cout << " the " << ansi::fg::magenta << index << ustr::get_ordinal(index) << ansi::util::reset;
     }
-    std::cout << " " << KGRN << args[0] << RST << " ";
+    std::cout << " " << ansi::fg::green << args[0] << ansi::util::reset << " ";
 
     // The container (if provided).
     if (args.size() == 2) {
         std::cout << "in";
         if (args[1].has_index()) {
             std::size_t index = args[1].get_index();
-            std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
+            std::cout << " the " << ansi::fg::magenta << index << ustr::get_ordinal(index) << ansi::util::reset;
         }
-        std::cout << " " << KGRN << args[1] << RST << " ";
+        std::cout << " " << ansi::fg::green << args[1] << ansi::util::reset << " ";
     }
     std::cout << "\n";
     return true;
@@ -55,32 +102,37 @@ bool do_take(interpreter::Interpreter &args)
     args.remove_ignored_words();
 
     // Error checking.
-    if (args[1].has_prefix_all() || args[1].has_quantity()) {
-        std::cerr << KRED << "[Arg. 2] You cannot specify a quantity.\n"
-                  << RST;
+    if (!args[0].has_only_one_prefix()) {
+        std::cerr << ansi::fg::red << "[Arg. 1] You cannot specify both quantity and index.\n"
+                  << ansi::util::reset;
+        return false;
+    }
+    if ((args.size() == 2) && (!args[1].has_only_one_prefix())) {
+        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify both quantity and index.\n"
+                  << ansi::util::reset;
         return false;
     }
 
     // The object.
     std::cout << "You take";
     if (args[0].has_prefix_all()) {
-        std::cout << " " << KMAG << "all" << RST;
+        std::cout << " " << ansi::fg::magenta << "all" << ansi::util::reset;
     } else if (args[0].has_quantity()) {
-        std::cout << " " << KMAG << args[0].get_quantity() << RST << " per";
+        std::cout << " " << ansi::fg::magenta << args[0].get_quantity() << ansi::util::reset << " per";
     } else if (args[0].has_index()) {
         std::size_t index = args[0].get_index();
-        std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
+        std::cout << " the " << ansi::fg::magenta << index << ustr::get_ordinal(index) << ansi::util::reset;
     }
-    std::cout << " " << KGRN << args[0] << RST << " ";
+    std::cout << " " << ansi::fg::green << args[0] << ansi::util::reset << " ";
 
     // The container (if provided).
     if (args.size() == 2) {
         std::cout << "from";
         if (args[1].has_index()) {
             std::size_t index = args[1].get_index();
-            std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
+            std::cout << " the " << ansi::fg::magenta << index << ustr::get_ordinal(index) << ansi::util::reset;
         }
-        std::cout << " " << KGRN << args[1] << RST << " ";
+        std::cout << " " << ansi::fg::green << args[1] << ansi::util::reset << " ";
     }
     std::cout << "\n";
     return true;
@@ -93,36 +145,36 @@ bool do_put(interpreter::Interpreter &args)
 
     // Check if the user provided the container.
     if (args.size() != 2) {
-        std::cerr << KRED << "You must provide the container.\n"
-                  << RST;
+        std::cerr << ansi::fg::red << "You must provide the container.\n"
+                  << ansi::util::reset;
         return false;
     }
     // Error checking.
     if (args[1].has_prefix_all() || args[1].has_quantity()) {
-        std::cerr << KRED << "[Arg. 2] You cannot specify a quantity.\n"
-                  << RST;
+        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify a quantity.\n"
+                  << ansi::util::reset;
         return false;
     }
 
     // Run the command.
     std::cout << "You put";
     if (args[0].has_prefix_all()) {
-        std::cout << " " << KMAG << "all" << RST;
+        std::cout << " " << ansi::fg::magenta << "all" << ansi::util::reset;
     } else if (args[0].has_quantity()) {
-        std::cout << " " << KMAG << args[0].get_quantity() << RST << " per";
+        std::cout << " " << ansi::fg::magenta << args[0].get_quantity() << ansi::util::reset << " per";
     } else if (args[0].has_index()) {
         std::size_t index = args[0].get_index();
-        std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
+        std::cout << " the " << ansi::fg::magenta << index << ustr::get_ordinal(index) << ansi::util::reset;
     }
-    std::cout << " " << KGRN << args[0] << RST << " ";
+    std::cout << " " << ansi::fg::green << args[0] << ansi::util::reset << " ";
 
     // Container.
     std::cout << "in";
     if (args[1].has_index()) {
         std::size_t index = args[1].get_index();
-        std::cout << " the " << KMAG << index << ustr::get_ordinal(index) << RST;
+        std::cout << " the " << ansi::fg::magenta << index << ustr::get_ordinal(index) << ansi::util::reset;
     }
-    std::cout << " " << KGRN << args[1] << RST << " ";
+    std::cout << " " << ansi::fg::green << args[1] << ansi::util::reset << " ";
     std::cout << "\n";
     return true;
 }
@@ -167,19 +219,20 @@ int main(int, char **)
     test_input(args, "take pen");
     test_input(args, "take 2*pen");
     test_input(args, "take 2.pen");
+    test_input(args, "take 2*2.pen");
     test_input(args, "take all.pen");
     test_input(args, "take all*pen");
     test_input(args, "take pen box");
     test_input(args, "take pen from box");
     test_input(args, "take pen from the box");
     test_input(args, "take 2*pen from 2.box");
+    test_input(args, "take all*pen from 2.box");
     test_input(args, "say how are you today?");
     test_input(args, "say two quantities are in the golden ratio if ...");
 
 #if 1
 
-    std::cout << "\nProvide some imputs, type `" << FRED("quit")
-              << "` to stop...\n\n";
+    std::cout << "\nProvide some imputs, type `" << ansi::fg::red << "quit" << ansi::util::reset << "` to stop...\n\n";
     // Create the input.
     std::string input;
     while (input != "quit") {
