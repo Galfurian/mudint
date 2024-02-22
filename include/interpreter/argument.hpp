@@ -36,6 +36,11 @@ bool must_ignore(const std::string &word);
 
 } // namespace config
 
+struct Option {
+    unsigned option;
+    std::vector<std::string> names;
+};
+
 /// @brief Allows to easily manage input arguments from players.
 class Argument {
 private:
@@ -86,6 +91,8 @@ public:
     /// @brief Forces a new index.
     /// @param _index the new value.
     void set_index(std::size_t _index);
+
+    unsigned map_to_option(const std::vector<Option> &options, bool sensitive, bool begins_with, bool ends_with, bool exact_match) const;
 
     /// @brief Provides the quantity extracted from the `original`.
     /// @return the extracted quantity.
