@@ -248,10 +248,6 @@ int main(int, char **)
     // Create the interpreter.
     interpreter::Interpreter args;
     
-    const char *szArg = nullptr;
-
-    test_input(args, szArg);
-
     test_input(args, "take pen");
     test_input(args, "take 2*pen");
     test_input(args, "take 2.pen");
@@ -275,7 +271,7 @@ int main(int, char **)
         std::cout << "> ";
         std::getline(std::cin, input);
         // Parse the input.
-        args.parse(input, false);
+        args.parse(input.c_str(), false);
         // Handle the input.
         handle_input(args);
         std::cout << "\n";

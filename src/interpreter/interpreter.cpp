@@ -11,9 +11,7 @@ Interpreter::Interpreter(const char *input, bool ignore)
     : original(),
       arguments()
 {
-    if (input) {
-        this->parse(input, ignore);
-    }
+    this->parse(input, ignore);
 }
 
 std::string Interpreter::get_original() const
@@ -58,7 +56,9 @@ Argument &Interpreter::get(const std::size_t &position)
 
 void Interpreter::parse(const char *input, bool ignore)
 {
-    if (input) {
+    original.clear();
+    arguments.clear();
+    if (input != nullptr) {
         // Save the original string.
         original = input;
         // Clean the current list of arguments.
