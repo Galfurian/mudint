@@ -32,7 +32,7 @@ public:
     /// @brief Constructor.
     /// @param input the string containing the input from the user.
     /// @param ignore if we should ignore the list of ignored words.
-    explicit Interpreter(const std::string &input, bool ignore);
+    explicit Interpreter(const char *input, bool ignore);
 
     /// @brief Destructor.
     ~Interpreter() = default;
@@ -74,7 +74,7 @@ public:
     /// @brief Parse the input string.
     /// @param input the input string.
     /// @param ignore if we should ignore the list of ignored words.
-    void parse(std::string const &input, bool ignore);
+    void parse(const char *input, bool ignore);
 
     /// @brief Finds the argument that mathes the input string.
     /// @param s the input string.

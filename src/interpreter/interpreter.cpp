@@ -7,11 +7,11 @@
 namespace interpreter
 {
 
-Interpreter::Interpreter(const std::string &input, bool ignore)
+Interpreter::Interpreter(const char *input, bool ignore)
     : original(),
       arguments()
 {
-    if (!input.empty()) {
+    if (input) {
         this->parse(input, ignore);
     }
 }
@@ -56,9 +56,9 @@ Argument &Interpreter::get(const std::size_t &position)
     return arguments.at(position);
 }
 
-void Interpreter::parse(std::string const &input, bool ignore)
+void Interpreter::parse(const char *input, bool ignore)
 {
-    if (!input.empty()) {
+    if (input) {
         // Save the original string.
         original = input;
         // Clean the current list of arguments.

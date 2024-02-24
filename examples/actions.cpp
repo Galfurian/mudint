@@ -201,7 +201,7 @@ bool handle_input(interpreter::Interpreter &args)
     return false;
 }
 
-void test_input(interpreter::Interpreter &args, const std::string &input)
+void test_input(interpreter::Interpreter &args, const char * input)
 {
     std::cout << "> " << input << "\n";
     // Parse the input.
@@ -215,6 +215,10 @@ int main(int, char **)
 {
     // Create the interpreter.
     interpreter::Interpreter args;
+    
+    const char *szArg = nullptr;
+
+    test_input(args, szArg);
 
     test_input(args, "take pen");
     test_input(args, "take 2*pen");
