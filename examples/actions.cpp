@@ -233,7 +233,7 @@ bool handle_input(interpreter::Interpreter &args)
     return false;
 }
 
-void test_input(interpreter::Interpreter &args, const std::string &input)
+void test_input(interpreter::Interpreter &args, const char * input)
 {
     std::cout << "> " << input << "\n";
     // Parse the input.
@@ -247,7 +247,7 @@ int main(int, char **)
 {
     // Create the interpreter.
     interpreter::Interpreter args;
-
+    
     test_input(args, "take pen");
     test_input(args, "take 2*pen");
     test_input(args, "take 2.pen");
@@ -271,7 +271,7 @@ int main(int, char **)
         std::cout << "> ";
         std::getline(std::cin, input);
         // Parse the input.
-        args.parse(input, false);
+        args.parse(input.c_str(), false);
         // Handle the input.
         handle_input(args);
         std::cout << "\n";
