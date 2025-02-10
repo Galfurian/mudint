@@ -1,9 +1,9 @@
 # Multi User Dungeon Interpreter (MUDInt)
 
-[![Ubuntu](https://github.com/Galfurian/mud_interpreter/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/Galfurian/mud_interpreter/actions/workflows/ubuntu.yml)
-[![Windows](https://github.com/Galfurian/mud_interpreter/actions/workflows/windows.yml/badge.svg)](https://github.com/Galfurian/mud_interpreter/actions/workflows/windows.yml)
-[![MacOS](https://github.com/Galfurian/mud_interpreter/actions/workflows/macos.yml/badge.svg)](https://github.com/Galfurian/mud_interpreter/actions/workflows/macos.yml)
-[![Documentation](https://github.com/Galfurian/mud_interpreter/actions/workflows/documentation.yml/badge.svg)](https://github.com/Galfurian/mud_interpreter/actions/workflows/documentation.yml)
+[![Ubuntu](https://github.com/Galfurian/ustr/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/Galfurian/ustr/actions/workflows/ubuntu.yml)
+[![Windows](https://github.com/Galfurian/ustr/actions/workflows/windows.yml/badge.svg)](https://github.com/Galfurian/ustr/actions/workflows/windows.yml)
+[![MacOS](https://github.com/Galfurian/ustr/actions/workflows/macos.yml/badge.svg)](https://github.com/Galfurian/ustr/actions/workflows/macos.yml)
+[![Documentation](https://github.com/Galfurian/ustr/actions/workflows/documentation.yml/badge.svg)](https://github.com/Galfurian/ustr/actions/workflows/documentation.yml)
 
 This repository provides a C++ library for interpreting and managing player inputs in a text-based Multi-User Dungeon (MUD). The library is designed to parse player commands, manage arguments, and handle structured input for a seamless gaming experience.
 
