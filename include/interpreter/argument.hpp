@@ -14,32 +14,10 @@
 #include <ustr/manipulate.hpp>
 #include <ustr/utility.hpp>
 
+#include "config.hpp"
+
 namespace interpreter
 {
-
-/// @brief JSON parser configuration.
-namespace config
-{
-/// @brief The list of words meaning "all".
-extern std::vector<std::string> list_of_all;
-/// @brief The list of words to ingnore.
-extern std::vector<std::string> list_of_ingnore;
-/// @brief The list of symbols for specifying a quantity.
-extern std::string list_of_symbols_multiplier;
-/// @brief The list of symbols for specifying an index.
-extern std::string list_of_symbols_index;
-
-/// @brief Checks if the given word means all.
-/// @param word the word to check.
-/// @return true if it means all, false otherwise.
-bool means_all(const std::string &word);
-
-/// @brief Checks if the given word must be ignored.
-/// @param word the word to check.
-/// @return true if it must be ignored, false otherwise.
-bool must_ignore(const std::string &word);
-
-} // namespace config
 
 /// @brief Represents a selectable option with associated names.
 ///
@@ -77,19 +55,19 @@ public:
 
     /// @brief The length of the `content` not the `original` string.
     /// @return the length.
-    std::size_t length() const;
+    auto length() const -> std::size_t;
 
     /// @brief Check if the `content`, not the `original` string, is empty.
     /// @return true if the content is empty, false otherwise.
-    bool empty() const;
+    auto empty() const -> bool;
 
     /// @brief Provides the original argument.
     /// @return the original string.
-    std::string get_original() const;
+    auto get_original() const -> std::string;
 
     /// @brief Provides the `content` with both index and quantity removed.
     /// @return the cleaned content.
-    std::string get_content() const;
+    auto get_content() const -> std::string;
 
     /// @brief Forces the content to a given string.
     /// @param _content the new value.
@@ -97,7 +75,7 @@ public:
 
     /// @brief Provides the index extracted from the `original`.
     /// @return the extracted index.
-    std::size_t get_index() const;
+    auto get_index() const -> std::size_t;
 
     /// @brief Forces a new index.
     /// @param _index the new value.
@@ -108,7 +86,7 @@ public:
     /// @param function binary comparison function.
     /// @return true if at least one of the conditions are true.
     template <typename Fun>
-    unsigned map_to_option(const std::vector<Option> &options, Fun function) const
+    auto map_to_option(const std::vector<Option> &options, Fun function) const -> unsigned
     {
         std::vector<Option>::const_iterator option_it;
         std::vector<std::string>::const_iterator name_it;
@@ -124,7 +102,7 @@ public:
 
     /// @brief Provides the quantity extracted from the `original`.
     /// @return the extracted quantity.
-    std::size_t get_quantity() const;
+    auto get_quantity() const -> std::size_t;
 
     /// @brief Forces a new quantity.
     /// @param _quantity the new value.
@@ -132,39 +110,40 @@ public:
 
     /// @brief Checks if there is only one prefix, or there is no prefix.
     /// @return true if only one prefix is provided, false otherwise.
-    bool has_only_one_prefix() const;
+    auto has_only_one_prefix() const -> bool;
 
     /// @brief Checks if the prefix means `all`.
     /// @return true if the prefix means `all`, false otherwise.
-    bool has_prefix_all() const;
+    auto has_prefix_all() const -> bool;
 
     /// @brief Checks if the prefix is a quantity.
     /// @return true if the prefix is a quantity, false otherwise.
-    bool has_quantity() const;
+    auto has_quantity() const -> bool;
 
     /// @brief Checks if the prefix is an index.
     /// @return true if the prefix is an index, false otherwise.
-    bool has_index() const;
+    auto has_index() const -> bool;
 
     /// @brief Checks if the whole argument means `all`.
     /// @return true if the whole argument means `all`, false otherwise.
-    bool means_all() const;
+    auto means_all() const -> bool;
 
     /// @brief Checks if the argument is an abbreviation of the given full string.
     /// @param full_string the full string.
     /// @param sensitive enables case-sensitive check.
     /// @param min_length the minimum number of characters for the prefix.
     /// @return true if the argument is an abbreviation equally long or longher than min_length, false otherwise.
-    bool is_abbreviation_of(const std::string &full_string, bool sensitive = false, std::size_t min_length = 1) const;
+    auto is_abbreviation_of(const std::string &full_string, bool sensitive = false, std::size_t min_length = 1) const
+        -> bool;
 
     /// @brief Checks if the `original` content was actually a number.
     /// @return true if it is a number, false otherwise.
-    bool is_number() const;
+    auto is_number() const -> bool;
 
     /// @brief Transforms the `original` content into an integer value.
     /// @return the number.
     template <typename T>
-    T to_number() const
+    auto to_number() const -> T
     {
         return ustr::to_number<T>(original);
     }
@@ -172,23 +151,23 @@ public:
     /// @brief Check if the `content`, not the `original` string, is equal to a given string.
     /// @param rhs the string to check.
     /// @return true if they are equal, false otherwise.
-    bool operator==(const std::string &rhs) const;
+    auto operator==(const std::string &rhs) const -> bool;
 
     /// @brief Access the character at the given position.
     /// @param pos the position.
     /// @return the character at the given position.
-    char operator[](std::size_t pos) const;
+    auto operator[](std::size_t pos) const -> char;
 
     /// @brief Access the character at the given position.
     /// @param pos the position.
     /// @return the character at the given position.
-    char &operator[](std::size_t pos);
+    auto operator[](std::size_t pos) -> char &;
 
     /// @brief Sends to the output stream the argument.
     /// @param lhs the stream.
     /// @param rhs the argument.
     /// @return the stream.
-    friend std::ostream &operator<<(std::ostream &lhs, const Argument &rhs);
+    friend auto operator<<(std::ostream &lhs, const Argument &rhs) -> std::ostream &;
 
 private:
     /// Evaluates the index and quantity.

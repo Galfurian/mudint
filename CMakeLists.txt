@@ -37,6 +37,7 @@ option(STRICT_WARNINGS "Enable strict compiler warnings" ON)
 option(WARNINGS_AS_ERRORS "Treat all warnings as errors" OFF)
 
 option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_TESTS "Build tests" ON)
 
 # -----------------------------------------------------------------------------
 # DEPENDENCY (SYSTEM LIBRARIES)
@@ -70,6 +71,7 @@ mark_as_advanced(FORCE
 # Add the C++ Library.
 add_library(${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/src/interpreter/argument.cpp
+    ${PROJECT_SOURCE_DIR}/src/interpreter/config.cpp
     ${PROJECT_SOURCE_DIR}/src/interpreter/interpreter.cpp
 )
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
@@ -144,6 +146,39 @@ if(BUILD_EXAMPLES)
     add_executable(${PROJECT_NAME}_actions ${PROJECT_SOURCE_DIR}/examples/actions.cpp)
     # Set the linked libraries.
     target_link_libraries(${PROJECT_NAME}_actions PUBLIC ${PROJECT_NAME})
+    # Set the library to use c++-11
+    target_compile_features(${PROJECT_NAME}_actions PUBLIC cxx_std_11)
+
+endif()
+
+# -----------------------------------------------------------------------------
+# TESTS
+# -----------------------------------------------------------------------------
+
+if(BUILD_TESTS)
+
+    # CMake has support for adding tests to a project.
+    enable_testing()
+    
+    add_executable(${PROJECT_NAME}_test_say ${PROJECT_SOURCE_DIR}/tests/test_say.cpp)
+    target_link_libraries(${PROJECT_NAME}_test_say ${PROJECT_NAME})
+    add_test(${PROJECT_NAME}_test_test_say_run ${PROJECT_NAME}_test_say)
+    
+    add_executable(${PROJECT_NAME}_test_say_with_question ${PROJECT_SOURCE_DIR}/tests/test_say_with_question.cpp)
+    target_link_libraries(${PROJECT_NAME}_test_say_with_question ${PROJECT_NAME})
+    add_test(${PROJECT_NAME}_test_say_with_question_run ${PROJECT_NAME}_test_say_with_question)
+    
+    add_executable(${PROJECT_NAME}_test_look_with_quantity ${PROJECT_SOURCE_DIR}/tests/test_look_with_quantity.cpp)
+    target_link_libraries(${PROJECT_NAME}_test_look_with_quantity ${PROJECT_NAME})
+    add_test(${PROJECT_NAME}_test_look_with_quantity_run ${PROJECT_NAME}_test_look_with_quantity)
+    
+    add_executable(${PROJECT_NAME}_test_take_with_index ${PROJECT_SOURCE_DIR}/tests/test_take_with_index.cpp)
+    target_link_libraries(${PROJECT_NAME}_test_take_with_index ${PROJECT_NAME})
+    add_test(${PROJECT_NAME}_test_take_with_index_run ${PROJECT_NAME}_test_take_with_index)
+    
+    add_executable(${PROJECT_NAME}_test_configure_option ${PROJECT_SOURCE_DIR}/tests/test_configure_option.cpp)
+    target_link_libraries(${PROJECT_NAME}_test_configure_option ${PROJECT_NAME})
+    add_test(${PROJECT_NAME}_test_configure_option_run ${PROJECT_NAME}_test_configure_option)
 
 endif()
 
