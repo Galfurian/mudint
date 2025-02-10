@@ -1,6 +1,9 @@
 /// @file interpreter.hpp
 /// @author Enrico Fraccaroli (enry.frak@gmail.com)
 /// @brief Defines the interpreter class.
+/// @copyright
+/// Copyright (c) 2024-2025. All rights reserved.
+/// Licensed under the MIT License. See LICENSE file in the project root for details.
 
 #pragma once
 
@@ -9,11 +12,18 @@
 #include <iomanip>
 #include <iostream>
 
+enum : unsigned char {
+    MUDINT_MAJOR_VERSION = 1, ///< Major version of the library.
+    MUDINT_MINOR_VERSION = 0, ///< Minor version of the library.
+    MUDINT_MICRO_VERSION = 0  ///< Micro version of the library.
+};
+
 namespace interpreter
 {
 
 /// @brief Allows to simply handle players inputs.
-class Interpreter {
+class Interpreter
+{
 private:
     /// The original string.
     std::string original;

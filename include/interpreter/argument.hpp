@@ -1,4 +1,9 @@
 /// @file argument.hpp
+/// @author Enrico Fraccaroli (enry.frak@gmail.com)
+/// @brief Definition of argument.
+/// @copyright
+/// Copyright (c) 2024-2025. All rights reserved.
+/// Licensed under the MIT License. See LICENSE file in the project root for details.
 
 #pragma once
 
@@ -36,13 +41,19 @@ bool must_ignore(const std::string &word);
 
 } // namespace config
 
+/// @brief Represents a selectable option with associated names.
+///
+/// @details Each option has a unique identifier and a list of names (aliases)
+/// that can be used to reference it. This structure is used to map input
+/// arguments to their corresponding options based on string comparisons.
 struct Option {
-    unsigned option;
-    std::vector<std::string> names;
+    unsigned option;                ///< Unique identifier for the option.
+    std::vector<std::string> names; ///< List of names or aliases for the option.
 };
 
 /// @brief Allows to easily manage input arguments from players.
-class Argument {
+class Argument
+{
 private:
     /// The original argument string.
     std::string original;

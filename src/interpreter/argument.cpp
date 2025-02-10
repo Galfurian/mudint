@@ -1,17 +1,15 @@
 /// @file argument.cpp
 /// @author Enrico Fraccaroli (enry.frak@gmail.com)
-/// @brief
-/// @version 0.1
-/// @date 2023-11-03
-///
-/// @copyright Copyright (c) 2023
-///
+/// @brief Implements the argument class.
+/// @copyright
+/// Copyright (c) 2024-2025. All rights reserved.
+/// Licensed under the MIT License. See LICENSE file in the project root for details.
 
 #include "interpreter/argument.hpp"
 
-#define FLAG_ALL      (1u << 1u) ///< The 'all.' prefix was specified.
-#define FLAG_QUANTITY (1u << 2u) ///< The '<quantity>*' postfix was specified.
-#define FLAG_INDEX    (1u << 3u) ///< The '<index>.' postfix was specified.
+#define FLAG_ALL      (1u << 1u) ///< The `all.` prefix was specified.
+#define FLAG_QUANTITY (1u << 2u) ///< The `<quantity>*` postfix was specified.
+#define FLAG_INDEX    (1u << 3u) ///< The `<index>.` postfix was specified.
 
 namespace interpreter
 {
@@ -19,14 +17,10 @@ namespace interpreter
 namespace config
 {
 
-std::vector<std::string> list_of_all = {
-    "all"
-};
-std::vector<std::string> list_of_ingnore = {
-    "in", "from", "with", "and", "the", "on", "at", "to", "a", "an"
-};
-std::string list_of_symbols_multiplier = "*";
-std::string list_of_symbols_index      = ".";
+std::vector<std::string> list_of_all     = {"all"};
+std::vector<std::string> list_of_ingnore = {"in", "from", "with", "and", "the", "on", "at", "to", "a", "an"};
+std::string list_of_symbols_multiplier   = "*";
+std::string list_of_symbols_index        = ".";
 
 bool means_all(const std::string &word)
 {
@@ -41,8 +35,11 @@ bool must_ignore(const std::string &word)
 } // namespace config
 
 Argument::Argument(const std::string &_original)
-    : original(_original), content(_original), index(1), quantity(1),
-      prefix(0)
+    : original(_original)
+    , content(_original)
+    , index(1)
+    , quantity(1)
+    , prefix(0)
 {
     // Evaluate all the prefix.
     this->evaluate_all_prefix();
@@ -59,50 +56,23 @@ void Argument::parse(const std::string &_original)
     this->evaluate_all_prefix();
 }
 
-size_t Argument::length() const
-{
-    return content.length();
-}
+size_t Argument::length() const { return content.length(); }
 
-bool Argument::empty() const
-{
-    return content.empty();
-}
+bool Argument::empty() const { return content.empty(); }
 
-std::string Argument::get_original() const
-{
-    return original;
-}
+std::string Argument::get_original() const { return original; }
 
-std::string Argument::get_content() const
-{
-    return content;
-}
+std::string Argument::get_content() const { return content; }
 
-void Argument::set_content(const std::string &_content)
-{
-    content = _content;
-}
+void Argument::set_content(const std::string &_content) { content = _content; }
 
-std::size_t Argument::get_index() const
-{
-    return index;
-}
+std::size_t Argument::get_index() const { return index; }
 
-void Argument::set_index(std::size_t _index)
-{
-    index = _index;
-}
+void Argument::set_index(std::size_t _index) { index = _index; }
 
-std::size_t Argument::get_quantity() const
-{
-    return quantity;
-}
+std::size_t Argument::get_quantity() const { return quantity; }
 
-void Argument::set_quantity(std::size_t _quantity)
-{
-    quantity = _quantity;
-}
+void Argument::set_quantity(std::size_t _quantity) { quantity = _quantity; }
 
 bool Argument::has_only_one_prefix() const
 {
@@ -112,50 +82,26 @@ bool Argument::has_only_one_prefix() const
     return true;
 }
 
-bool Argument::has_prefix_all() const
-{
-    return (prefix & FLAG_ALL) == FLAG_ALL;
-}
+bool Argument::has_prefix_all() const { return (prefix & FLAG_ALL) == FLAG_ALL; }
 
-bool Argument::has_quantity() const
-{
-    return (prefix & FLAG_QUANTITY) == FLAG_QUANTITY;
-}
+bool Argument::has_quantity() const { return (prefix & FLAG_QUANTITY) == FLAG_QUANTITY; }
 
-bool Argument::has_index() const
-{
-    return (prefix & FLAG_INDEX) == FLAG_INDEX;
-}
+bool Argument::has_index() const { return (prefix & FLAG_INDEX) == FLAG_INDEX; }
 
-bool Argument::means_all() const
-{
-    return interpreter::config::means_all(original);
-}
+bool Argument::means_all() const { return interpreter::config::means_all(original); }
 
 bool Argument::is_abbreviation_of(const std::string &full_string, bool sensitive, std::size_t min_length) const
 {
     return ustr::is_abbreviation_of(content, full_string, sensitive, min_length);
 }
 
-bool Argument::is_number() const
-{
-    return ustr::is_number(original);
-}
+bool Argument::is_number() const { return ustr::is_number(original); }
 
-bool Argument::operator==(const std::string &rhs) const
-{
-    return content == rhs;
-}
+bool Argument::operator==(const std::string &rhs) const { return content == rhs; }
 
-char Argument::operator[](std::size_t pos) const
-{
-    return content[pos];
-}
+char Argument::operator[](std::size_t pos) const { return content[pos]; }
 
-char &Argument::operator[](std::size_t pos)
-{
-    return content[pos];
-}
+char &Argument::operator[](std::size_t pos) { return content[pos]; }
 
 std::ostream &operator<<(std::ostream &lhs, const Argument &rhs)
 {

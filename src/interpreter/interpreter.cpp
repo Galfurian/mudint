@@ -1,6 +1,9 @@
-/// @file interpreter.cpp
+/// @file interpreter.hpp
 /// @author Enrico Fraccaroli (enry.frak@gmail.com)
 /// @brief Implements the interpreter functions.
+/// @copyright
+/// Copyright (c) 2024-2025. All rights reserved.
+/// Licensed under the MIT License. See LICENSE file in the project root for details.
 
 #include "interpreter/interpreter.hpp"
 
@@ -8,51 +11,27 @@ namespace interpreter
 {
 
 Interpreter::Interpreter(const char *input, bool ignore)
-    : original(),
-      arguments()
+    : original()
+    , arguments()
 {
     this->parse(input, ignore);
 }
 
-std::string Interpreter::get_original() const
-{
-    return original;
-}
+std::string Interpreter::get_original() const { return original; }
 
-size_t Interpreter::size() const
-{
-    return arguments.size();
-}
+size_t Interpreter::size() const { return arguments.size(); }
 
-bool Interpreter::empty() const
-{
-    return arguments.empty();
-}
+bool Interpreter::empty() const { return arguments.empty(); }
 
-Interpreter::iterator Interpreter::begin()
-{
-    return arguments.begin();
-}
+Interpreter::iterator Interpreter::begin() { return arguments.begin(); }
 
-Interpreter::const_iterator Interpreter::begin() const
-{
-    return arguments.begin();
-}
+Interpreter::const_iterator Interpreter::begin() const { return arguments.begin(); }
 
-Interpreter::iterator Interpreter::end()
-{
-    return arguments.end();
-}
+Interpreter::iterator Interpreter::end() { return arguments.end(); }
 
-Interpreter::const_iterator Interpreter::end() const
-{
-    return arguments.end();
-}
+Interpreter::const_iterator Interpreter::end() const { return arguments.end(); }
 
-Argument &Interpreter::get(const std::size_t &position)
-{
-    return arguments.at(position);
-}
+Argument &Interpreter::get(const std::size_t &position) { return arguments.at(position); }
 
 void Interpreter::parse(const char *input, bool ignore)
 {
@@ -144,8 +123,7 @@ void Interpreter::dump() const
             std::cout << " Index: " << std::setw(2) << argument.get_index() << " ";
         }
         if (argument.has_quantity()) {
-            std::cout << " Quantity: " << std::setw(2) << argument.get_quantity()
-                      << " ";
+            std::cout << " Quantity: " << std::setw(2) << argument.get_quantity() << " ";
         }
         if (argument.has_prefix_all()) {
             std::cout << " Quantity: ALL ";

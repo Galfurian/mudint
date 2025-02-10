@@ -64,14 +64,12 @@ bool do_look(interpreter::Interpreter &args)
 
     // Error checking.
     if (args[0].has_prefix_all() || args[0].has_quantity()) {
-        std::cerr << ansi::fg::red << "[Arg. 1] You cannot specify a quantity.\n"
-                  << ansi::util::reset;
+        std::cerr << ansi::fg::red << "[Arg. 1] You cannot specify a quantity.\n" << ansi::util::reset;
         return false;
     }
     // Error checking (it is safe even if the container is not provided).
     if (args[1].has_prefix_all() || args[1].has_quantity()) {
-        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify a quantity.\n"
-                  << ansi::util::reset;
+        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify a quantity.\n" << ansi::util::reset;
         return false;
     }
 
@@ -103,13 +101,11 @@ bool do_take(interpreter::Interpreter &args)
 
     // Error checking.
     if (!args[0].has_only_one_prefix()) {
-        std::cerr << ansi::fg::red << "[Arg. 1] You cannot specify both quantity and index.\n"
-                  << ansi::util::reset;
+        std::cerr << ansi::fg::red << "[Arg. 1] You cannot specify both quantity and index.\n" << ansi::util::reset;
         return false;
     }
     if ((args.size() == 2) && (!args[1].has_only_one_prefix())) {
-        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify both quantity and index.\n"
-                  << ansi::util::reset;
+        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify both quantity and index.\n" << ansi::util::reset;
         return false;
     }
 
@@ -145,14 +141,12 @@ bool do_put(interpreter::Interpreter &args)
 
     // Check if the user provided the container.
     if (args.size() != 2) {
-        std::cerr << ansi::fg::red << "You must provide the container.\n"
-                  << ansi::util::reset;
+        std::cerr << ansi::fg::red << "You must provide the container.\n" << ansi::util::reset;
         return false;
     }
     // Error checking.
     if (args[1].has_prefix_all() || args[1].has_quantity()) {
-        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify a quantity.\n"
-                  << ansi::util::reset;
+        std::cerr << ansi::fg::red << "[Arg. 2] You cannot specify a quantity.\n" << ansi::util::reset;
         return false;
     }
 
@@ -188,14 +182,12 @@ bool do_configure(interpreter::Interpreter &args)
         option_type_address,
     };
     std::vector<interpreter::Option> option_list = {
-        { option_type_name, { "name" } },
-        { option_type_address, { "address" } },
+        {option_type_name, {"name"}},
+        {option_type_address, {"address"}},
     };
-    unsigned option = args[0].map_to_option(
-        option_list,
-        [](const std::string &content, const std::string &name) {
-            return ustr::is_abbreviation_of(content, name, false, 3);
-        });
+    unsigned option = args[0].map_to_option(option_list, [](const std::string &content, const std::string &name) {
+        return ustr::is_abbreviation_of(content, name, false, 3);
+    });
 
     if (option == option_type_name) {
         std::cout << "You selected " << ansi::fg::magenta << "name" << ansi::util::reset;
@@ -233,7 +225,7 @@ bool handle_input(interpreter::Interpreter &args)
     return false;
 }
 
-void test_input(interpreter::Interpreter &args, const char * input)
+void test_input(interpreter::Interpreter &args, const char *input)
 {
     std::cout << "> " << input << "\n";
     // Parse the input.
@@ -247,7 +239,7 @@ int main(int, char **)
 {
     // Create the interpreter.
     interpreter::Interpreter args;
-    
+
     test_input(args, "take pen");
     test_input(args, "take 2*pen");
     test_input(args, "take 2.pen");
