@@ -2,7 +2,9 @@
 layout: default
 ---
 
-# Multi User Dungeon Interpreter (MUDInt)
+# MUDInt
+
+## Multi User Dungeon Interpreter
 
 [![Ubuntu](https://github.com/Galfurian/ustr/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/Galfurian/ustr/actions/workflows/ubuntu.yml)
 [![Windows](https://github.com/Galfurian/ustr/actions/workflows/windows.yml/badge.svg)](https://github.com/Galfurian/ustr/actions/workflows/windows.yml)
