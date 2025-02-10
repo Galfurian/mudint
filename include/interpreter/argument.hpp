@@ -14,32 +14,10 @@
 #include <ustr/manipulate.hpp>
 #include <ustr/utility.hpp>
 
+#include "config.hpp"
+
 namespace interpreter
 {
-
-/// @brief JSON parser configuration.
-namespace config
-{
-/// @brief The list of words meaning "all".
-extern std::vector<std::string> list_of_all;
-/// @brief The list of words to ingnore.
-extern std::vector<std::string> list_of_ingnore;
-/// @brief The list of symbols for specifying a quantity.
-extern std::string list_of_symbols_multiplier;
-/// @brief The list of symbols for specifying an index.
-extern std::string list_of_symbols_index;
-
-/// @brief Checks if the given word means all.
-/// @param word the word to check.
-/// @return true if it means all, false otherwise.
-bool means_all(const std::string &word);
-
-/// @brief Checks if the given word must be ignored.
-/// @param word the word to check.
-/// @return true if it must be ignored, false otherwise.
-bool must_ignore(const std::string &word);
-
-} // namespace config
 
 /// @brief Represents a selectable option with associated names.
 ///

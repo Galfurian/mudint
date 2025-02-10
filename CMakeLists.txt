@@ -70,6 +70,7 @@ mark_as_advanced(FORCE
 # Add the C++ Library.
 add_library(${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/src/interpreter/argument.cpp
+    ${PROJECT_SOURCE_DIR}/src/interpreter/config.cpp
     ${PROJECT_SOURCE_DIR}/src/interpreter/interpreter.cpp
 )
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
