@@ -141,4 +141,4 @@ Steps to Contribute:
 
 ## License
 
-`ustr` is licensed under the MIT License.
+`MUDInt` is licensed under the MIT License.
