@@ -29,12 +29,12 @@ extern std::string list_of_symbols_index;
 /// @brief Checks if the given word means all.
 /// @param word the word to check.
 /// @return true if it means all, false otherwise.
-bool means_all(const std::string &word);
+auto means_all(const std::string &word) -> bool;
 
 /// @brief Checks if the given word must be ignored.
 /// @param word the word to check.
 /// @return true if it must be ignored, false otherwise.
-bool must_ignore(const std::string &word);
+auto must_ignore(const std::string &word) -> bool;
 
 } // namespace config
 

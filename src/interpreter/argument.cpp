@@ -7,9 +7,11 @@
 
 #include "interpreter/argument.hpp"
 
-#define FLAG_ALL      (1u << 1u) ///< The `all.` prefix was specified.
-#define FLAG_QUANTITY (1u << 2u) ///< The `<quantity>*` postfix was specified.
-#define FLAG_INDEX    (1u << 3u) ///< The `<index>.` postfix was specified.
+enum : unsigned char {
+    FLAG_ALL      = (1U << 1U), ///< The `all.` prefix was specified.
+    FLAG_QUANTITY = (1U << 2U), ///< The `<quantity>*` postfix was specified.
+    FLAG_INDEX    = (1U << 3U)  ///< The `<index>.` postfix was specified.
+};
 
 namespace interpreter
 {
@@ -36,54 +38,52 @@ void Argument::parse(const std::string &_original)
     this->evaluate_all_prefix();
 }
 
-size_t Argument::length() const { return content.length(); }
+auto Argument::length() const -> size_t { return content.length(); }
 
-bool Argument::empty() const { return content.empty(); }
+auto Argument::empty() const -> bool { return content.empty(); }
 
-std::string Argument::get_original() const { return original; }
+auto Argument::get_original() const -> std::string { return original; }
 
-std::string Argument::get_content() const { return content; }
+auto Argument::get_content() const -> std::string { return content; }
 
 void Argument::set_content(const std::string &_content) { content = _content; }
 
-std::size_t Argument::get_index() const { return index; }
+auto Argument::get_index() const -> std::size_t { return index; }
 
 void Argument::set_index(std::size_t _index) { index = _index; }
 
-std::size_t Argument::get_quantity() const { return quantity; }
+auto Argument::get_quantity() const -> std::size_t { return quantity; }
 
 void Argument::set_quantity(std::size_t _quantity) { quantity = _quantity; }
 
-bool Argument::has_only_one_prefix() const
+auto Argument::has_only_one_prefix() const -> bool
 {
-    if ((this->has_prefix_all() + this->has_quantity() + this->has_index()) > 1) {
-        return false;
-    }
-    return true;
+    return (static_cast<int>(this->has_prefix_all()) + static_cast<int>(this->has_quantity()) +
+            static_cast<int>(this->has_index())) <= 1;
 }
 
-bool Argument::has_prefix_all() const { return (prefix & FLAG_ALL) == FLAG_ALL; }
+auto Argument::has_prefix_all() const -> bool { return (prefix & FLAG_ALL) == FLAG_ALL; }
 
-bool Argument::has_quantity() const { return (prefix & FLAG_QUANTITY) == FLAG_QUANTITY; }
+auto Argument::has_quantity() const -> bool { return (prefix & FLAG_QUANTITY) == FLAG_QUANTITY; }
 
-bool Argument::has_index() const { return (prefix & FLAG_INDEX) == FLAG_INDEX; }
+auto Argument::has_index() const -> bool { return (prefix & FLAG_INDEX) == FLAG_INDEX; }
 
-bool Argument::means_all() const { return interpreter::config::means_all(original); }
+auto Argument::means_all() const -> bool { return interpreter::config::means_all(original); }
 
-bool Argument::is_abbreviation_of(const std::string &full_string, bool sensitive, std::size_t min_length) const
+auto Argument::is_abbreviation_of(const std::string &full_string, bool sensitive, std::size_t min_length) const -> bool
 {
     return ustr::is_abbreviation_of(content, full_string, sensitive, min_length);
 }
 
-bool Argument::is_number() const { return ustr::is_number(original); }
+auto Argument::is_number() const -> bool { return ustr::is_number(original); }
 
-bool Argument::operator==(const std::string &rhs) const { return content == rhs; }
+auto Argument::operator==(const std::string &rhs) const -> bool { return content == rhs; }
 
-char Argument::operator[](std::size_t pos) const { return content[pos]; }
+auto Argument::operator[](std::size_t pos) const -> char { return content[pos]; }
 
-char &Argument::operator[](std::size_t pos) { return content[pos]; }
+auto Argument::operator[](std::size_t pos) -> char & { return content[pos]; }
 
-std::ostream &operator<<(std::ostream &lhs, const Argument &rhs)
+auto operator<<(std::ostream &lhs, const Argument &rhs) -> std::ostream &
 {
     lhs << rhs.content;
     return lhs;
@@ -120,7 +120,7 @@ void Argument::evaluate_index()
     // Check the digits.
     if (ustr::is_number(digits)) {
         // Get the number and set it.
-        std::size_t number = ustr::to_number<std::size_t>(digits);
+        auto number = ustr::to_number<std::size_t>(digits);
         if (number < INT_MAX) {
             // Set the number.
             index = number;
@@ -155,7 +155,7 @@ void Argument::evaluate_quantity()
     // Check the digits.
     if (ustr::is_number(digits)) {
         // Get the number and set it.
-        std::size_t number = ustr::to_number<std::size_t>(digits);
+        auto number = ustr::to_number<std::size_t>(digits);
         if (number < INT_MAX) {
             // Set the number.
             quantity = number;

@@ -20,12 +20,12 @@ std::vector<std::string> list_of_ingnore = {"in", "from", "with", "and", "the", 
 std::string list_of_symbols_multiplier   = "*";
 std::string list_of_symbols_index        = ".";
 
-bool means_all(const std::string &word)
+auto means_all(const std::string &word) -> bool
 {
     return ustr::word_is_among(word, interpreter::config::list_of_all, false, false, false, true);
 }
 
-bool must_ignore(const std::string &word)
+auto must_ignore(const std::string &word) -> bool
 {
     return ustr::word_is_among(word, interpreter::config::list_of_ingnore, false, false, false, true);
 }

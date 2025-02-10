@@ -10,28 +10,23 @@
 namespace interpreter
 {
 
-Interpreter::Interpreter(const char *input, bool ignore)
-    : original()
-    , arguments()
-{
-    this->parse(input, ignore);
-}
+Interpreter::Interpreter(const char *input, bool ignore) { this->parse(input, ignore); }
 
-std::string Interpreter::get_original() const { return original; }
+auto Interpreter::get_original() const -> std::string { return original; }
 
-size_t Interpreter::size() const { return arguments.size(); }
+auto Interpreter::size() const -> size_t { return arguments.size(); }
 
-bool Interpreter::empty() const { return arguments.empty(); }
+auto Interpreter::empty() const -> bool { return arguments.empty(); }
 
-Interpreter::iterator Interpreter::begin() { return arguments.begin(); }
+auto Interpreter::begin() -> Interpreter::iterator { return arguments.begin(); }
 
-Interpreter::const_iterator Interpreter::begin() const { return arguments.begin(); }
+auto Interpreter::begin() const -> Interpreter::const_iterator { return arguments.begin(); }
 
-Interpreter::iterator Interpreter::end() { return arguments.end(); }
+auto Interpreter::end() -> Interpreter::iterator { return arguments.end(); }
 
-Interpreter::const_iterator Interpreter::end() const { return arguments.end(); }
+auto Interpreter::end() const -> Interpreter::const_iterator { return arguments.end(); }
 
-Argument &Interpreter::get(const std::size_t &position) { return arguments.at(position); }
+auto Interpreter::get(const std::size_t &position) -> Argument & { return arguments.at(position); }
 
 void Interpreter::parse(const char *input, bool ignore)
 {
@@ -49,29 +44,29 @@ void Interpreter::parse(const char *input, bool ignore)
         // Iterate the words and add them to the list of arguments.
         for (it = words.begin(); it != words.end(); ++it) {
             if (!ignore || !interpreter::config::must_ignore(*it)) {
-                arguments.push_back(Argument(*it));
+                arguments.emplace_back(*it);
             }
         }
     }
 }
 
-const Argument *Interpreter::find(std::string const &s, bool exact) const
+auto Interpreter::find(std::string const &s, bool exact) const -> const Argument *
 {
-    for (const_iterator it = arguments.begin(); it != arguments.end(); ++it) {
+    for (const auto &argument : arguments) {
         if (exact) {
-            if (it->get_content() == s) {
-                return &(*it);
+            if (argument.get_content() == s) {
+                return &argument;
             }
         } else {
-            if (ustr::begin_with(it->get_content(), s, false, 0)) {
-                return &(*it);
+            if (ustr::begin_with(argument.get_content(), s, false, 0)) {
+                return &argument;
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
-std::string Interpreter::substr(std::size_t _start, std::size_t _end) const
+auto Interpreter::substr(std::size_t _start, std::size_t _end) const -> std::string
 {
     if (_start >= this->size()) {
         return original;
@@ -92,7 +87,7 @@ std::string Interpreter::substr(std::size_t _start, std::size_t _end) const
 void Interpreter::erase(const std::size_t &position)
 {
     if (position < arguments.size()) {
-        std::vector<Argument>::iterator it = arguments.begin();
+        auto it = arguments.begin();
         std::advance(it, position);
         arguments.erase(it);
     } else {
@@ -102,7 +97,7 @@ void Interpreter::erase(const std::size_t &position)
 
 void Interpreter::remove_ignored_words()
 {
-    iterator it = arguments.begin();
+    auto it = arguments.begin();
     while (it != arguments.end()) {
         if (interpreter::config::must_ignore(it->get_content())) {
             it = arguments.erase(it);
@@ -132,7 +127,7 @@ void Interpreter::dump() const
     }
 }
 
-Argument &Interpreter::operator[](const std::size_t &position)
+auto Interpreter::operator[](const std::size_t &position) -> Argument &
 {
     if (position >= arguments.size()) {
         static Argument empty("");
@@ -141,7 +136,7 @@ Argument &Interpreter::operator[](const std::size_t &position)
     return arguments[position];
 }
 
-const Argument &Interpreter::operator[](const std::size_t &position) const
+auto Interpreter::operator[](const std::size_t &position) const -> const Argument &
 {
     if (position >= arguments.size()) {
         static Argument empty("");

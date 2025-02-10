@@ -32,9 +32,9 @@ private:
 
 public:
     /// @brief Iterator for arguments.
-    typedef std::vector<Argument>::iterator iterator;
+    using iterator       = std::vector<Argument>::iterator;
     /// @brief Constant iterator for arguments.
-    typedef std::vector<Argument>::const_iterator const_iterator;
+    using const_iterator = std::vector<Argument>::const_iterator;
 
     /// @brief Constructor.
     explicit Interpreter() = default;
@@ -44,42 +44,60 @@ public:
     /// @param ignore if we should ignore the list of ignored words.
     explicit Interpreter(const char *input, bool ignore);
 
+    /// @brief Copy constructor.
+    /// @param other The instance to copy from.
+    Interpreter(const Interpreter &other) = default;
+
+    /// @brief Copy assignment operator.
+    /// @param other The instance to copy from.
+    /// @return Reference to the instance.
+    auto operator=(const Interpreter &other) -> Interpreter & = default;
+
+    /// @brief Move constructor.
+    /// @param other The instance to move from.
+    Interpreter(Interpreter &&other) noexcept = default;
+
+    /// @brief Move assignment operator.
+    /// @param other The instance to move from.
+    /// @return Reference to the instance.
+    auto operator=(Interpreter &&other) noexcept -> Interpreter & = default;
+
     /// @brief Destructor.
     ~Interpreter() = default;
 
     /// @brief Provides the original input string.
     /// @return a copy of the original string.
-    std::string get_original() const;
+    auto get_original() const -> std::string;
 
     /// @brief Returns the number of arguments.
     /// @return the number of arguments.
-    std::size_t size() const;
+    auto size() const -> std::size_t;
 
     /// @brief Checks if the vector of arguments is empty.
     /// @return true if there are no arguments.
     /// @return false if there are arguments.
-    bool empty() const;
+    auto empty() const -> bool;
 
     /// @brief Returns an interator to the start of the list of argments.
     /// @return the start iterator.
-    inline iterator begin();
+    inline auto begin() -> iterator;
 
     /// @brief Returns an interator to the start of the list of argments.
     /// @return the start iterator.
-    inline const_iterator begin() const;
+    inline auto begin() const -> const_iterator;
 
     /// @brief Returns an interator to the end of the list of argments.
     /// @return the end iterator.
-    inline iterator end();
+    inline auto end() -> iterator;
 
     /// @brief Returns an interator to the end of the list of argments.
     /// @return the end iterator.
-    inline const_iterator end() const;
+    inline auto end() const -> const_iterator;
 
     /// @brief Allows to retrieve const reference to argument at given position.
     /// @param position the index at which we retrieve the argument.
     /// @return the retrieved argument
-    Argument &get(const std::size_t &position);
+    auto get(const std::size_t &position) -> Argument &;
 
     /// @brief Parse the input string.
     /// @param input the input string.
@@ -90,13 +108,13 @@ public:
     /// @param s the input string.
     /// @param exact if true, the string must match, otherwise it can just begin with it.
     /// @return the found argument, NULL if it was not found.
-    const Argument *find(std::string const &s, bool exact = false) const;
+    auto find(std::string const &s, bool exact = false) const -> const Argument *;
 
     /// @brief Returns the string from the given argument to the end.
     /// @param _start the starting index.
     /// @param _end the final index, by default is the end of the argument list.
     /// @return the recontruscted string.
-    std::string substr(std::size_t _start, std::size_t _end = std::string::npos) const;
+    auto substr(std::size_t _start, std::size_t _end = std::string::npos) const -> std::string;
 
     /// @brief Erase the argument at the given position.
     /// @param position the position where the argument should be removed.
@@ -111,12 +129,12 @@ public:
     /// @brief Allows to retrieve const reference to argument at given position.
     /// @param position the index at which we retrieve the argument.
     /// @return the retrieved argument
-    Argument &operator[](const std::size_t &position);
+    auto operator[](const std::size_t &position) -> Argument &;
 
     /// @brief Allows to retrieve const reference to argument at given position.
     /// @param position the index at which we retrieve the argument.
     /// @return the retrieved argument
-    const Argument &operator[](const std::size_t &position) const;
+    auto operator[](const std::size_t &position) const -> const Argument &;
 };
 
 } // namespace interpreter
