@@ -1,4 +1,6 @@
-# Multi User Dungeon Interpreter (MUDInt)
+# MUDInt
+
+## Multi User Dungeon Interpreter
 
 [![Ubuntu](https://github.com/Galfurian/ustr/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/Galfurian/ustr/actions/workflows/ubuntu.yml)
 [![Windows](https://github.com/Galfurian/ustr/actions/workflows/windows.yml/badge.svg)](https://github.com/Galfurian/ustr/actions/workflows/windows.yml)
@@ -122,6 +124,19 @@ Customize argument prefixes or ignored words by modifying the `interpreter::conf
 - Standard C++ libraries (`<vector>`, `<string>`, `<iostream>`, etc.).
 - `ustr` utility for string manipulation, it's already fetched by CMake, no need to worry.
 
+## Contributing
+
+Contributions are welcome! If you have suggestions, bug reports, or new features
+to propose, feel free to open an issue or submit a pull request.
+
+Steps to Contribute:
+
+- Fork the repository.
+- Create a new branch: `git checkout -b my-feature-branch`
+- Commit your changes: `git commit -m 'Add some feature'`
+- Push the branch: `git push origin my-feature-branch`
+- Open a pull request.
+
 ## License
 
-This library is unlicensed, cheers.
+`MUDInt` is licensed under the MIT License.
